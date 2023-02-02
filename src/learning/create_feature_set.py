@@ -25,7 +25,7 @@ def create_feature_set(data, targets, similarity_measure, sentence_embedding_mod
     Path(caching_directory_targets).mkdir(parents=True, exist_ok=True)
     caching_directory = DATA_PATH + "cache/training/" + data
     Path(caching_directory).mkdir(parents=True, exist_ok=True)
-    queries_path = DATA_PATH + 'training/' + data + '_train/queries.tsv'
+    queries_path = DATA_PATH + 'training/' + data + '/queries.tsv'
     queries = get_queries(queries_path)
     all_features = []
     feature_names = ""
@@ -44,9 +44,9 @@ def create_feature_set(data, targets, similarity_measure, sentence_embedding_mod
         all_sim_scores[query_id] = []
     output_path_root = DATA_PATH + data
     Path(output_path_root).mkdir(parents=True, exist_ok=True)
-    gold_path = DATA_PATH + 'training/' + data + '_train/gold.tsv'
+    gold_path = DATA_PATH + 'training/' + data + '/gold.tsv'
     correct_targets = get_correct_targets(gold_path)
-    output_path = DATA_PATH + 'training/' + data + '_train/' + feature_names + '_feature_set'
+    output_path = DATA_PATH + 'training/' + data + '/' + feature_names + '_feature_set'
     if os.path.exists(output_path):
         print('exists')
         feature_set_df = load_pickled_object(decompress_file(output_path+ ".pickle" + ".zip"))

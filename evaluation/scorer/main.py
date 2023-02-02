@@ -63,14 +63,14 @@ def validate_files(pred_file, gold_file):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('data', type=str, default="clef_2022_checkthat_2a_english")
     parser.add_argument('gold', type=str, help='Path to goldfile.')
+    parser.add_argument('pred', type=str, help='Path to predfile.')
 
     args = parser.parse_args()
 
     line_separator = '=' * 120
 
-    pred_file = DATA_PATH + args.data + "/pred_qrels.tsv"
+    pred_file = args.pred
     gold_file = args.gold
 
     if validate_files(pred_file, gold_file):

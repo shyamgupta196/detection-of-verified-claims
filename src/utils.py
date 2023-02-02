@@ -137,19 +137,24 @@ def output_dict_to_pred_qrels(output_dictionary, output_data_name):
     df.to_csv(output_data_name, index=False, header=False, sep='\t')
 
 
-def supervised_output_to_pred_qrels(supervised_output_df, output_data_name):
+def supervised_output_to_pred_qrels(test_df, queries, k, output_data_name):
     df = pd.DataFrame(columns=['qid', 'Q0', 'docno', 'rank', 'score', 'tag'])
-    list_of_qids = supervised_output_df['query'].tolist()
-    list_of_docno = supervised_output_df['target'].tolist()
-    list_of_scores = supervised_output_df['label'].tolist()
-    array_of_scores = np.array(list_of_scores)
-    df = df.reset_index(drop=True)
-    df['qid'] = pd.Series(list_of_qids)
-    df['docno'] = pd.Series(list_of_docno)
-    df['score'] = pd.Series(array_of_scores).astype(float)
-    df['Q0'] = 'Q0'
-    df['rank'] = '1'
-    df['tag'] = 'SimBa'
+    for query_id in list(queries.keys()):
+        this_query_df = pd.DataFrame(columns=['qid', 'Q0', 'docno', 'rank', 'score', 'tag'])
+        current_query_test_df = test_df[test_df['query'] == query_id]
+        current_query_test_df = current_query_test_df.sort_values(by='label', ascending=False).head(k)
+        list_of_docno = current_query_test_df['target'].tolist()
+        list_of_scores = current_query_test_df['label'].tolist()
+        array_of_scores = np.array(list_of_scores)
+        this_query_df['qid'] = query_id
+        this_query_df['docno'] = pd.Series(list_of_docno)
+        this_query_df['score'] = pd.Series(array_of_scores).astype(float)
+        this_query_df['qid'] = query_id
+        this_query_df['Q0'] = 'Q0'
+        this_query_df['rank'] = '1'
+        this_query_df['tag'] = 'SimBa'
+        this_query_df = this_query_df.reset_index(drop=True)
+        df = pd.concat([df, this_query_df], names=['qid', 'Q0', 'docno', 'rank', 'score', 'tag'])
     df = df.reset_index(drop=True)
     df.to_csv(output_data_name, index=False, header=False, sep='\t')
 

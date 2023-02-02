@@ -279,7 +279,7 @@ def run():
     feature_top_ks = {}
     if args.union_of_top_k_per_feature:
         for feature in all_features:
-            this_feature_sim_scores = np.stack(all_sim_scores_df[feature].to_numpy())
+            this_feature_sim_scores = np.stack(all_sim_scores_df[feature])
             sim_scores_top_k_values, sim_scores_top_k_idx = torch.topk(torch.tensor(this_feature_sim_scores), k=k,
                                                                    dim=1, largest=True)
             sim_scores_top_k_values = sim_scores_top_k_values.cpu().tolist()

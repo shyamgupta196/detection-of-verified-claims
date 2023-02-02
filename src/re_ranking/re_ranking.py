@@ -3,6 +3,8 @@ import os
 import numpy as np
 import torch
 import pandas as pd
+from sklearn import svm, naive_bayes, preprocessing
+from sklearn.feature_selection import VarianceThreshold, f_classif, SelectKBest
 from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import StandardScaler
 
@@ -18,7 +20,13 @@ from src.utils import load_pickled_object, decompress_file, get_queries, get_tar
 from scipy.spatial.distance import cdist
 from pathlib import Path
 
-classifier = LogisticRegression()
+#classifier = LogisticRegression()
+#classifier = svm.SVC(probability=True)
+classifier = naive_bayes.MultinomialNB()
+scaler = preprocessing.MinMaxScaler()
+#sel = VarianceThreshold(threshold=(.8 * (1 - .8)))
+sel = SelectKBest(f_classif, k=4)
+# scaler = StandardScaler()
 
 
 
@@ -77,14 +85,17 @@ def run():
     """
     0. Learning
     """
-    training_df = create_feature_set(args.data, targets, args.similarity_measure, args.sentence_embedding_models, args.referential_similarity_measures,
-                        args.lexical_similarity_measures, args.string_similarity_measures)
-    X_train = training_df.iloc[:,2:-1]
-    y_train = training_df.iloc[:,-1:]
-    y_train = y_train.values.ravel()
-    scaler = StandardScaler()
-    X_train = scaler.fit_transform(X_train, y_train)
-    classifier.fit(X_train, y_train)
+    if args.supervised:
+        training_df = create_feature_set(args.data, targets, args.similarity_measure, args.sentence_embedding_models, args.referential_similarity_measures,
+                            args.lexical_similarity_measures, args.string_similarity_measures)
+        X_train = training_df.iloc[:,2:-1]
+        y_train = training_df.iloc[:,-1:]
+        y_train = y_train.values.ravel()
+       # X_train = sel.fit_transform(X_train)
+        X_train = sel.fit_transform(X_train, y_train)
+        print(sel.get_feature_names_out())
+        X_train = scaler.fit_transform(X_train, y_train)
+        classifier.fit(X_train, y_train)
     """
     1. For all sentence embedding models\
     1.1 Embed all queries and cache or load from cache\
@@ -121,17 +132,27 @@ def run():
             if os.path.exists(stored_embedded_targets + ".pickle" + ".zip"):
                 embedded_targets = load_pickled_object(decompress_file(stored_embedded_targets+".pickle"+".zip"))
                 # keep only candidate targets
-                embedded_candidate_targets = dict((k[embedded_targets]) for k in candidate_target_ids if k in embedded_targets)
+                embedded_candidate_targets = {key: embedded_targets[key] for key in candidate_target_ids}
+                #embedded_candidate_targets = dict((k[embedded_targets.values()]) for k in candidate_target_ids if k in list(embedded_targets.values()))
+                print('embedded_candidate_targets loaded')
+                print(len(embedded_candidate_targets))
             else:
                 embedded_candidate_targets = encode_targets(candidate_targets, model)
+                print('embedded_candidate_targets computed')
+                print(len(embedded_candidate_targets))
             for query_id in list(queries.keys()):
                 query_embedding = embedded_queries[query_id].reshape(1, -1)
-                embedded_targets_array = np.array(list(embedded_candidate_targets.values()))
+                current_candidate_ids = candidates[query_id]
+                current_embedded_candidate_targets = {key: embedded_candidate_targets[key] for key in current_candidate_ids}
+                embedded_targets_array = np.array(list(current_embedded_candidate_targets.values()))
                 sim_scores = (1 - cdist(query_embedding, embedded_targets_array,
                                         metric=args.similarity_measure)) * 100
-                n_targets = sim_scores.shape[1]
-                sim_scores = sim_scores.reshape(n_targets,)
-                all_sim_scores[query_id].append(sim_scores)
+                #sim_scores_dict = dict(zip(current_candidate_ids, sim_scores))
+                n_targets = len(current_candidate_ids)
+                #c_list = [sim_scores_dict[target_id] for target_id in current_candidate_ids]
+                c_list = sim_scores.tolist()
+                current_candidate_sim_scores = np.array(c_list).reshape(n_targets, )
+                all_sim_scores[query_id].append(current_candidate_sim_scores)
     """
     2. For all referential similarity measures\
     2.1 get entities for all queries and cache or load from cache\
@@ -178,7 +199,13 @@ def run():
                         len_intersection = len(query_entities.intersection(target_entities))
                         ratio = (100/(len_query_entities+len_target_entities))*len_intersection
                         sim_scores[idx] = ratio
-                all_sim_scores[query_id].append(sim_scores)
+                current_candidate_ids = candidates[query_id]
+                current_sim_scores = sim_scores
+                sim_scores_dict = dict(zip(original_target_ids, current_sim_scores))
+                n_targets = len(current_candidate_ids)
+                c_list = [sim_scores_dict[target_id] for target_id in current_candidate_ids]
+                current_candidate_sim_scores = np.array(c_list).reshape(n_targets, )
+                all_sim_scores[query_id].append(current_candidate_sim_scores)
     """
     3. For all lexical similarity measures
     3.1 get entities for all queries and cache or load from cache\
@@ -228,7 +255,13 @@ def run():
                         elif lex_feature == "similar_words_ratio_length":
                             ratio = (100/len_union)*len_intersection
                         sim_scores[idx] = ratio
-                all_sim_scores[query_id].append(sim_scores)
+                current_candidate_ids = candidates[query_id]
+                current_sim_scores = sim_scores
+                sim_scores_dict = dict(zip(original_target_ids, current_sim_scores))
+                n_targets = len(current_candidate_ids)
+                c_list = [sim_scores_dict[target_id] for target_id in current_candidate_ids]
+                current_candidate_sim_scores = np.array(c_list).reshape(n_targets, )
+                all_sim_scores[query_id].append(current_candidate_sim_scores)
     """
     4. For all string similarity measures
         4.1 Calculate all similarity scores for all combinations -> value between 0 and 100 and cache
@@ -253,7 +286,13 @@ def run():
                     query = queries[query_id]
                     target = candidate_targets[target_id]
                     sim_scores[idx] = get_string_similarity(query, target, string_feature)
-                all_sim_scores[query_id].append(sim_scores)
+                current_candidate_ids = candidates[query_id]
+                current_sim_scores = sim_scores
+                sim_scores_dict = dict(zip(original_target_ids, current_sim_scores))
+                n_targets = len(current_candidate_ids)
+                c_list = [sim_scores_dict[target_id] for target_id in current_candidate_ids]
+                current_candidate_sim_scores = np.array(c_list).reshape(n_targets, )
+                all_sim_scores[query_id].append(current_candidate_sim_scores)
     """
     Evaluation step:
     Get mean and variance of all different similarity scores to better understand how to normalize them
@@ -274,16 +313,15 @@ def run():
     if args.supervised:
         test_df = create_test_set(all_sim_scores, candidates, all_features, args.data)
         X_test = test_df.iloc[:,2:]
+        #X_test = sel.transform(X_test)
+        X_test = sel.transform(X_test)
         X_test = scaler.transform(X_test)
-        y_test = classifier.predict_proba(X_test)
-        # y_test = classifier.predict(X_test)
+        y_test = classifier.predict_proba(X_test)*100
         test_df['label'] = y_test[:, 1]
-        test_df = test_df.groupby('query').apply(lambda x: x.sort_values(['label'], ascending=False)).reset_index(drop=True)
-        print(test_df)
-        # supervised_output_df = test_df[test_df.label != str(0)]
+        test_df_path = DATA_PATH + args.data + "/pred_test.tsv"
+        test_df.to_csv(test_df_path, index=False, header=False, sep='\t')
         supervised_output_path = DATA_PATH + args.data + "/pred_qrels_supervised.tsv"
-        test_df.to_csv(supervised_output_path, index=False, header=False, sep='\t')
-        supervised_output_to_pred_qrels(test_df, output_path)
+        supervised_output_to_pred_qrels(test_df, queries, args.k, supervised_output_path)
     else:
         for query_id, query_sim_scores in list(all_sim_scores.items()):
             mean_sim_scores = np.mean(query_sim_scores, axis=0)

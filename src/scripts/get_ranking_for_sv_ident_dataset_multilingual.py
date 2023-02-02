@@ -355,7 +355,7 @@ def run():
     ###
 
     data_name = "sv_ident_val_fields_1"
-    # 
+
     # subprocess.call(["python",
     #                  "../../src/candidate_retrieval/retrieval.py",
     #                  "../../data/sv_ident_val/queries.tsv",
@@ -366,32 +366,33 @@ def run():
     #                  "--union_of_top_k_per_feature",
     #                  '-sentence_embedding_models', "sentence-transformers/sentence-t5-base", "distiluse-base-multilingual-cased-v1",
     #                  "princeton-nlp/sup-simcse-roberta-large", "all-mpnet-base-v2", "infersent",
-    #                  "https://tfhub.dev/google/universal-sentence-encoder-multilingual-large/3",
     #                  '-referential_similarity_measures', "synonym_similarity", "ne_similarity",
     #                  '-lexical_similarity_measures', "similar_words_ratio", "similar_words_ratio_length",
     #                  '-string_similarity_measures', "jaccard_similarity", "levenshtein", "sequence_matching"])
-    # 
+    #
     # subprocess.call(["python", "../../evaluation/scorer/recall_evaluator.py",
     #                  data_name,
     #                  "../../data/sv_ident_val/gold.tsv"])
-    # 
+
     subprocess.call(["python",
                      "../../src/re_ranking/re_ranking.py",
                      "../../data/sv_ident_val/queries.tsv",
                      "../../data/sv_ident_val_fields_1/study_title_variable_label_question_text_question_text_en_sub_question_item_categories_pp_targets.tsv",
                      data_name,
                      "braycurtis",
-                     "10",
+                     "50",
                      '--supervised',
-                     '-sentence_embedding_models', "sentence-transformers/sentence-t5-base", "distiluse-base-multilingual-cased-v1", "all-mpnet-base-v2",
-                      "infersent", # "princeton-nlp/sup-simcse-roberta-large", "https://tfhub.dev/google/universal-sentence-encoder-multilingual-large/3",
-                     #'-referential_similarity_measures', "synonym_similarity", "ne_similarity",
-                     '-lexical_similarity_measures', "similar_words_ratio", "similar_words_ratio_length"])
-                     #'-string_similarity_measures', "jaccard_similarity", "levenshtein", "sequence_matching"])
+                     '-sentence_embedding_models', "sentence-transformers/sentence-t5-base", "distiluse-base-multilingual-cased-v1",
+                      # "princeton-nlp/sup-simcse-roberta-large", "https://tfhub.dev/google/universal-sentence-encoder-multilingual-large/3",
+                     '-referential_similarity_measures', "synonym_similarity", "ne_similarity",
+                     '-lexical_similarity_measures', "similar_words_ratio", "similar_words_ratio_length",
+                     '-string_similarity_measures', "jaccard_similarity", "levenshtein", "sequence_matching"
+                    ])
 
     subprocess.call(["python", "../../evaluation/scorer/main.py",
-                     data_name,
-                     "../../data/sv_ident_val/gold.tsv"])
+                     "../../data/sv_ident_val/gold.tsv",
+                     "../../data/"+data_name+ "/pred_qrels_supervised.tsv"])
+                     #"../../data/" + data_name + "/pred_qrels.tsv"])
 
 
     ## Trial Data

@@ -1,9 +1,12 @@
+import os
+
 import requests
 from zipfile import ZipFile
 from pathlib import Path
 from os.path import join
-from os import listdir, rmdir
+from os import remove
 from shutil import move
+import pandas as pd
 
 from src.get_data import DATA_PATH
 
@@ -31,7 +34,18 @@ def run():
     with open(directory+"/train_qrels.tsv", 'wb') as f:
         f.write(train_qrels.content)
 
-    
+    columns = ['query', '0', 'target', '1']
+
+    tsv1 = pd.read_csv(directory+"/dev_qrels.tsv", sep='\t', names =columns)
+    tsv2 = pd.read_csv(directory+"/train_qrels.tsv", sep='\t', names =columns)
+
+    output_df = pd.concat([tsv1, tsv2], axis = 0)
+    output_df.to_csv(qrels_path, header = False, sep='\t', index=False)
+
+    os.remove(directory+"/dev_qrels.tsv")
+    os.remove(directory + "/train_qrels.tsv")
+
+
 
 
 if __name__ == "__main__":

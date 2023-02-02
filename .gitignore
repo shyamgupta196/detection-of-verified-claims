@@ -148,3 +148,10 @@ data/sv_ident_val_fields_1
 *corpus
 *corpus_dic
 *targets.tsv
+vadis_pubs_corpus.json
+vocab
+data/gesis_unsup
+data/11235
+data/clef_2022_checkthat_2a_english
+data/training/clef_2022_checkthat_2a_english
+data/training/sv_ident_val_fields_1
