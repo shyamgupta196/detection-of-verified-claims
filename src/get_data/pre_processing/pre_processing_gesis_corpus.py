@@ -5,6 +5,7 @@ from pathlib import Path
 import pandas as pd
 
 from src.get_data import DATA_PATH
+from src.learning.variable_detection import load_classifier_and_predict_variables
 from src.utils import load_pickled_object
 
 
@@ -18,7 +19,7 @@ def tokenize_document(full_text):
     return text_chunks
 
 
-def create_queries_and_targets_for_document(document_n):
+def create_queries_and_targets_for_document(document_n, queries_pp=False):
 
     queries_df =  pd.DataFrame(columns=['uuid', 'text'])
     with open(DATA_PATH + "gesis_unsup/vadis_pubs_corpus.json") as f:
@@ -27,9 +28,14 @@ def create_queries_and_targets_for_document(document_n):
     document_id = document[0]
     document_content = document[1]
 
-    Path(DATA_PATH + document_id).mkdir(parents=True, exist_ok=True)
-    queries_data_path = DATA_PATH + document_id + "/queries.tsv"
-    targets_data_path = DATA_PATH + document_id + "/corpus"
+    if queries_pp:
+        Path(DATA_PATH + document_id+ "_pp").mkdir(parents=True, exist_ok=True)
+        queries_data_path = DATA_PATH + document_id + "_pp/queries.tsv"
+        targets_data_path = DATA_PATH + document_id + "_pp/corpus"
+    else:
+        Path(DATA_PATH + document_id).mkdir(parents=True, exist_ok=True)
+        queries_data_path = DATA_PATH + document_id + "/queries.tsv"
+        targets_data_path = DATA_PATH + document_id + "/corpus"
 
     #document_fulltext = document_content["fulltext"]
     document_sentences = document_content["sentence_tokens"]
@@ -37,6 +43,9 @@ def create_queries_and_targets_for_document(document_n):
     queries_df['uuid'] = queries_df.index
 
     queries_df.to_csv(queries_data_path, sep='\t', header=False, index=False)
+
+    if queries_pp:
+        load_classifier_and_predict_variables(queries_data_path)
 
     related_datsets = document_content["related_research_datasets"]
 
@@ -73,7 +82,8 @@ def create_queries_and_targets_for_document(document_n):
             corpus_df = pd.concat([corpus_df, target_df], names=columns)
     corpus_df.to_csv(targets_data_path, sep='\t', header=True, index=False)
 
-create_queries_and_targets_for_document(3)
+create_queries_and_targets_for_document(1, queries_pp=True)
+
 
 
 
