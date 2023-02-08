@@ -34,17 +34,26 @@ def create_queries_and_targets_for_document(document_n):
     #document_fulltext = document_content["fulltext"]
     document_sentences = document_content["sentence_tokens"]
     queries_df['text'] = pd.Series(document_sentences)
-    queries_df['uuid'] = int(document_id) + queries_df.index
+    queries_df['uuid'] = queries_df.index
 
     queries_df.to_csv(queries_data_path, sep='\t', header=False, index=False)
 
     related_datsets = document_content["related_research_datasets"]
+
     for ds in related_datsets:
         variables = get_variable_dataset(ds)
         all_variable_parts = []
+        variable_fields_info = {}
         for variable in variables.items():
             variable_fields = variable[1]['_source']
+            for field in variable_fields.keys():
+                variable_fields_info[field] = 0
+        for variable in variables.items():
+            variable_fields = variable[1]['_source']
+            for field in variable_fields.keys():
+                variable_fields_info[field] += 1
             all_variable_parts.extend(list(variable_fields.keys()))
+    print(variable_fields_info)
     all_variable_parts = list(set(all_variable_parts))
     columns = ['id'] + all_variable_parts
     corpus_df = pd.DataFrame(columns=columns)
@@ -61,10 +70,10 @@ def create_queries_and_targets_for_document(document_n):
                 else:
                     this_row = this_row + [" "]
             target_df = pd.DataFrame([this_row], columns=columns)
-            corpus_df = pd.concat([corpus_df, target_df])
+            corpus_df = pd.concat([corpus_df, target_df], names=columns)
     corpus_df.to_csv(targets_data_path, sep='\t', header=True, index=False)
 
-create_queries_and_targets_for_document(1)
+create_queries_and_targets_for_document(3)
 
 
 

@@ -70,6 +70,8 @@ def get_targets(corpus_of_targets_filename):
 
 def get_certain_target_fields(corpus_of_targets_filename, fields):
     df = pd.read_csv(corpus_of_targets_filename, sep='\t', dtype=str)
+    fields = [x for x in fields if x in df.columns]
+    print(fields)
     return df[fields]
 
 
