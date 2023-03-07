@@ -374,25 +374,25 @@ def run():
     #                  data_name,
     #                  "../../data/sv_ident_val/gold.tsv"])
 
-    subprocess.call(["python",
-                     "../../src/re_ranking/re_ranking.py",
-                     "../../data/sv_ident_val/queries.tsv",
-                     "../../data/sv_ident_val_fields_1/study_title_variable_label_question_text_question_text_en_sub_question_item_categories_pp_targets.tsv",
-                     data_name,
-                     "braycurtis",
-                     "50",
-                     '--supervised',
-                     '-sentence_embedding_models', "sentence-transformers/sentence-t5-base", "distiluse-base-multilingual-cased-v1",
-                      # "princeton-nlp/sup-simcse-roberta-large", "https://tfhub.dev/google/universal-sentence-encoder-multilingual-large/3",
-                     '-referential_similarity_measures', "synonym_similarity", "ne_similarity",
-                     '-lexical_similarity_measures', "similar_words_ratio", "similar_words_ratio_length",
-                     '-string_similarity_measures', "jaccard_similarity", "levenshtein", "sequence_matching"
-                    ])
-
-    subprocess.call(["python", "../../evaluation/scorer/main.py",
-                     "../../data/sv_ident_val/gold.tsv",
-                     "../../data/"+data_name+ "/pred_qrels_supervised.tsv"])
-                     #"../../data/" + data_name + "/pred_qrels.tsv"])
+    # subprocess.call(["python",
+    #                  "../../src/re_ranking/re_ranking.py",
+    #                  "../../data/sv_ident_val/queries.tsv",
+    #                  "../../data/sv_ident_val_fields_1/study_title_variable_label_question_text_question_text_en_sub_question_item_categories_pp_targets.tsv",
+    #                  data_name,
+    #                  "braycurtis",
+    #                  "50",
+    #                  '--supervised',
+    #                  '-sentence_embedding_models', "sentence-transformers/sentence-t5-base", "distiluse-base-multilingual-cased-v1",
+    #                   # "princeton-nlp/sup-simcse-roberta-large", "https://tfhub.dev/google/universal-sentence-encoder-multilingual-large/3",
+    #                  '-referential_similarity_measures', "synonym_similarity", "ne_similarity",
+    #                  '-lexical_similarity_measures', "similar_words_ratio", "similar_words_ratio_length",
+    #                  '-string_similarity_measures', "jaccard_similarity", "levenshtein", "sequence_matching"
+    #                 ])
+    #
+    # subprocess.call(["python", "../../evaluation/scorer/main.py",
+    #                  "../../data/sv_ident_val/gold.tsv",
+    #                  "../../data/"+data_name+ "/pred_qrels_supervised.tsv"])
+    #                  #"../../data/" + data_name + "/pred_qrels.tsv"])
 
 
     ## Trial Data
@@ -406,7 +406,7 @@ def run():
     #                  "braycurtis",
     #                  "20",
     #                  "--union_of_top_k_per_feature",
-    #                  '-sentence_embedding_models', "sentence-transformers/sentence-t5-base", "distiluse-base-multilingual-cased-v1",
+    #                  '-sentence_embedding_models', "pritamdeka/PubMedBERT-mnli-snli-scinli-scitail-mednli-stsb", "pritamdeka/S-Scibert-snli-multinli-stsb", "pritamdeka/BioBERT-mnli-snli-scinli-scitail-mednli-stsb", "roberta-base-nli-mean-tokens", "roberta-base", "johngiorgi/declutr-sci-base", "johngiorgi/declutr-base", "sentence-transformers/sentence-t5-base", "distiluse-base-multilingual-cased-v1",
     #                  '-referential_similarity_measures', "synonym_similarity", "ne_similarity",
     #                  '-lexical_similarity_measures', "similar_words_ratio", "similar_words_ratio_length",
     #                  '-string_similarity_measures', "jaccard_similarity", "levenshtein", "sequence_matching"])
@@ -422,14 +422,15 @@ def run():
     #                  "sv_ident_trial_en",
     #                  "braycurtis",
     #                  "10",
-    #                  '-sentence_embedding_models', "sentence-transformers/sentence-t5-base"])#, "distiluse-base-multilingual-cased-v1",
+    #                  '-sentence_embedding_models', "pritamdeka/PubMedBERT-mnli-snli-scinli-scitail-mednli-stsb"])#, "distiluse-base-multilingual-cased-v1",
     #                  # '-referential_similarity_measures', "synonym_similarity", "ne_similarity",
     #                  # '-lexical_similarity_measures', "similar_words_ratio", "similar_words_ratio_length",
     #                  # '-string_similarity_measures', "jaccard_similarity", "levenshtein", "sequence_matching"])
     #
     # subprocess.call(["python", "../../evaluation/scorer/main.py",
-    #                  "sv_ident_trial_en",
-    #                  "../../data/sv_ident_trial_en/gold.tsv"])
+    #                  "../../data/sv_ident_trial_en/gold.tsv",
+    #                  "../../data/sv_ident_trial_en/pred_qrels.tsv"
+    #                  ])
 
 
 

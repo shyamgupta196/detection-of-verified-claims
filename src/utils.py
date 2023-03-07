@@ -83,6 +83,9 @@ def get_candidate_targets(candidates_dict, targets_dict):
     return candidate_targets
 
 
+def all_targets_as_query_candidates(query_ids, target_ids):
+    return {query_id: target_ids for query_id in query_ids}
+
 
 def make_top_k_dictionary(query_ids, target_ids, sim_scores_top_k_values, sim_scores_top_k_idx):
     top_k_targets_per_query = {}

@@ -78,8 +78,6 @@ def run():
         targets_df.to_csv(output_path, index=False, header=True, sep='\t')
 
 
-
-
 if __name__ == "__main__":
     run()
 

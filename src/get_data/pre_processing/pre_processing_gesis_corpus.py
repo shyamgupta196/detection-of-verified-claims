@@ -37,7 +37,9 @@ def create_queries_and_targets_for_document(document_n, queries_pp=False):
         queries_data_path = DATA_PATH + document_id + "/queries.tsv"
         targets_data_path = DATA_PATH + document_id + "/corpus"
 
-    #document_fulltext = document_content["fulltext"]
+    document_fulltext = document_content["fulltext"]
+    with open(DATA_PATH + document_id+ "/full_text.txt", "w", encoding="utf-8") as text_file:
+        text_file.write(document_fulltext)
     document_sentences = document_content["sentence_tokens"]
     queries_df['text'] = pd.Series(document_sentences)
     queries_df['uuid'] = queries_df.index
@@ -82,8 +84,11 @@ def create_queries_and_targets_for_document(document_n, queries_pp=False):
             corpus_df = pd.concat([corpus_df, target_df], names=columns)
     corpus_df.to_csv(targets_data_path, sep='\t', header=True, index=False)
 
-create_queries_and_targets_for_document(1, queries_pp=True)
-
+#create_queries_and_targets_for_document(1)#, queries_pp=True)
+#create_queries_and_targets_for_document(2, queries_pp=True)
+#create_queries_and_targets_for_document(3, queries_pp=True)
+#create_queries_and_targets_for_document(10)
+create_queries_and_targets_for_document(10, queries_pp=True)
 
 
 
