@@ -65,7 +65,7 @@ def run():
     #                  '-fields', 'variable_label'
     #                 ])
 
-    data_name_orig = '11235'
+    #data_name_orig = '11235'
     # data_name = '11235_fields_6'
     #
     # subprocess.call(["python",
@@ -101,7 +101,7 @@ def run():
     # subprocess.call(["python",
     #                  "../../src/re_ranking/re_ranking.py",
     #                  "../../data/"+data_name_queries+"/queries.tsv",
-    #                  "../../data/"+data_name_targets+"/pp_targets.tsv",
+    #                  "../../data/"+data_name_targets+"/targets_labels.tsv",
     #                  data_name,
     #                  "braycurtis",
     #                  "10",
@@ -136,63 +136,68 @@ def run():
     #                  data_name_targets,
     #                  '-fields', 'variable_label', 'variable_label_en'])
 
-    data_name_queries = '11235_pp'
-    data_name_targets = '11235_fields_6'
-    data_name = '11235_pp_fields_6_ne'
+    # data_name_queries = '11155'
+    # data_name_targets = 'gesis_unsup'
+    # data_name = '11155'
 
-    subprocess.call(["python",
-                     "../../src/re_ranking/re_ranking.py",
-                     "../../data/"+data_name_queries+"/queries.tsv",
-                     "../../data/"+data_name_targets+"/pp_targets.tsv",
-                     data_name,
-                     "braycurtis",
-                     "20",
-                     '--ranking_only',
-                     #'-sentence_embedding_models', "sentence-transformers/sentence-t5-base", #"johngiorgi/declutr-sci-base",#, "https://tfhub.dev/google/universal-sentence-encoder/4"])
-                     '-referential_similarity_measures', "ne_similarity",
-                     #'-lexical_similarity_measures', "similar_words_ratio"
-                     #'-string_similarity_measures', "sequence_matching", "levenshtein"
-                     ])
+    # subprocess.call(["python",
+    #                  "../../src/re_ranking/re_ranking.py",
+    #                  "../../data/"+data_name_queries+"/queries.tsv",
+    #                  "../../data/"+data_name_targets+"/targets_labels.tsv",
+    #                  data_name,
+    #                  "braycurtis",
+    #                  "20",
+    #                  '--ranking_only',
+    #                  '-sentence_embedding_models', "sentence-transformers/sentence-t5-base", #"johngiorgi/declutr-sci-base",#, "https://tfhub.dev/google/universal-sentence-encoder/4"])
+    #                  '-referential_similarity_measures', "ne_similarity",
+    #                  '-lexical_similarity_measures', "similar_words_ratio"
+    #                  '-string_similarity_measures', "sequence_matching", "levenshtein"
+    #                  ])
 
     # data_name_queries = '13391_pp_queries'
     # data_name_targets = '13391_fields_4'
     # data_name = '13391_pp_queries_fields_4_no_retrieval'
 
-    # subprocess.call(["python",
-    #                  "../../src/candidate_retrieval/retrieval.py",
-    #                  "../../data/"+data_name_orig+"/queries.tsv",
-    #                  "../../data/"+data_name_targets+"/pp_targets.tsv",
-    #                  data_name,
-    #                  "braycurtis",
-    #                  "10",
-    #                  "--union_of_top_k_per_feature",
-    #                  '-sentence_embedding_models', "sentence-transformers/sentence-t5-base", "all-mpnet-base-v2", "princeton-nlp/sup-simcse-roberta-large",
-    #                  '-referential_similarity_measures', "synonym_similarity", "ne_similarity",
-    #                  '-lexical_similarity_measures', "similar_words_ratio", "similar_words_ratio_length",
-    #                  '-string_similarity_measures', "sequence_matching", "levenshtein"])
-
+    data_name_queries = '11155_pp'
+    data_name_targets = 'gesis_unsup'
+    new_data_name_targets = 'gesis_unsup_labels'
+    data_name = '11155'
 
     # subprocess.call(["python",
-    #                  "../../src/re_ranking/re_ranking.py",
-    #                  "../../data/"+data_name_queries+"/queries.tsv",
-    #                  "../../data/"+data_name_targets+"/pp_targets.tsv",
-    #                  data_name,
-    #                  "braycurtis",
-    #                  "10",
-    #                  '--ranking_only',
-    #                  '-sentence_embedding_models', "sentence-transformers/sentence-t5-base", "all-mpnet-base-v2", "princeton-nlp/sup-simcse-roberta-large",#, "https://tfhub.dev/google/universal-sentence-encoder/4"])
-    #                  #'-referential_similarity_measures', "synonym_similarity", "ne_similarity",
-    #                  #'-lexical_similarity_measures', "similar_words_ratio", "similar_words_ratio_length",
-    #                  #'-string_similarity_measures', "sequence_matching", "levenshtein"
-    #                  ])
+    #                  "../../src/pre_processing/pre_processing_targets.py",
+    #                  "../../data/"+data_name_targets+"/corpus",
+    #                  new_data_name_targets,
+    #                  '-fields', 'variable_label', 'variable_label_en'])
+
+    data_name_targets = new_data_name_targets
 
 
+    subprocess.call(["python",
+                     "../../src/candidate_retrieval/retrieval.py",
+                     "../../data/"+data_name_queries+"/queries.tsv",
+                     "../../data/"+data_name_targets+"/corpus",
+                     data_name,
+                     "braycurtis",
+                     "10",
+                     "--union_of_top_k_per_feature",
+                     '-sentence_embedding_models', "sentence-transformers/sentence-t5-base", "all-mpnet-base-v2", "princeton-nlp/sup-simcse-roberta-large",
+                     '-referential_similarity_measures', "synonym_similarity", "ne_similarity",
+                     '-lexical_similarity_measures', "similar_words_ratio", "similar_words_ratio_length",
+                     '-string_similarity_measures', "sequence_matching", "levenshtein"])
 
 
-
-
-
-
+    subprocess.call(["python",
+                     "../../src/re_ranking/re_ranking.py",
+                     "../../data/"+data_name_queries+"/queries.tsv",
+                     "../../data/"+data_name_targets+"/corpus",
+                     data_name,
+                     "braycurtis",
+                     "10",
+                     '-sentence_embedding_models', "sentence-transformers/sentence-t5-base", "all-mpnet-base-v2", "princeton-nlp/sup-simcse-roberta-large",#, "https://tfhub.dev/google/universal-sentence-encoder/4"])
+                     #'-referential_similarity_measures', "synonym_similarity", "ne_similarity",
+                     #'-lexical_similarity_measures', "similar_words_ratio", "similar_words_ratio_length",
+                     #'-string_similarity_measures', "sequence_matching", "levenshtein"
+                     ])
 
 
 if __name__ == "__main__":

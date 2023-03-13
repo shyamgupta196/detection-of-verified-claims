@@ -1,9 +1,8 @@
 from sentence_transformers import SentenceTransformer
 import logging
 import nltk
-import torch
 import tensorflow_hub as hub
-import tensorflow_text
+import torch
 
 from src.create_similarity_features import SRC_PATH
 from src.create_similarity_features.infersent_encoder.infersent.models import InferSent

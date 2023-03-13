@@ -1,10 +1,9 @@
 import argparse
 import os
 import numpy as np
-import torch
 import pandas as pd
+import torch
 from tensorflow.python.framework.ops import EagerTensor
-from tensorflow.python.ops.numpy_ops import np_config
 
 from src.create_similarity_features.lexical_similarity import get_lexical_entities
 from src.create_similarity_features.referential_similarity import get_sequence_entities

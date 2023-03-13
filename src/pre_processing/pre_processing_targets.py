@@ -27,7 +27,7 @@ def run():
     if args.fields != ['all'] and args.fields != ['analysis']:
         fields = ['id']
         fields.extend(args.fields)
-        output_path = output_dir + 'pp_targets.tsv'
+        output_path = output_dir + 'corpus'
         targets_df = get_certain_target_fields(args.targets, fields)
         targets_df.to_csv(output_path, index=False, header=True, sep='\t')
 

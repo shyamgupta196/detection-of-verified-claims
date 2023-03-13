@@ -7,7 +7,7 @@ from src.utils import get_queries, get_targets
 def create_pred_file_with_text(data_name_orig, data_name, data_name_targets, score_threshold=25):
 
     queries_path = DATA_PATH + data_name_orig + "/queries.tsv"
-    targets_path = DATA_PATH + data_name_targets + "/pp_targets.tsv"
+    targets_path = DATA_PATH + data_name_targets + "/targets_labels.tsv"
     pred_path = DATA_PATH + data_name + "/pred_qrels.tsv"
 
     columns = ['query_id', 'target_id', 'score', 'query_text', 'target_text']
