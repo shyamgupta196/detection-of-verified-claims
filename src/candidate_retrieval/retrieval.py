@@ -36,6 +36,7 @@ def run():
     parser.add_argument('k', type=int, default=100, help='How many targets per queries should be retrieved')
     parser.add_argument('--union_of_top_k_per_feature', action="store_true",
                         help='How to combine the features: either take mean of different features or union of top k per feature. If not selected teh output is the top k of mean of features.')
+    parser.add_argument('--gesis_unsup', action="store_true", help = 'cache targets for gesis unsup')
     parser.add_argument('-sentence_embedding_models', type=str, nargs='+',
                     default=[],
                     help='Pass a list of sentence embedding models hosted by Huggingface or Tensorflow or simply pass "infersent" to use the infersent encoder.')
@@ -48,6 +49,8 @@ def run():
     Name datapaths and load queries and targets.
     """
     caching_directory = DATA_PATH + "cache/" + args.data
+    if args.gesis_unsup:
+        caching_directory_targets = DATA_PATH + "cache/gesis_unsup_labels"
     Path(caching_directory).mkdir(parents=True, exist_ok=True)
     queries = get_queries(args.queries)
     targets = get_targets(args.targets)
@@ -97,7 +100,7 @@ def run():
         else:
             model_name = str(model)
         stored_embedded_queries = caching_directory + "/embedded_queries_" + model_name
-        stored_embedded_targets = caching_directory + "/embedded_targets_" + model_name
+        stored_embedded_targets = caching_directory_targets + "/embedded_targets_" + model_name
         stored_sim_scores = caching_directory + "/sim_scores_" + model_name
         if os.path.exists(stored_sim_scores + ".pickle" + ".zip"):
             sim_scores_to_store = load_pickled_object(decompress_file(stored_sim_scores+".pickle"+".zip"))
@@ -114,6 +117,7 @@ def run():
                 os.remove(stored_embedded_queries + ".pickle")
             if os.path.exists(stored_embedded_targets + ".pickle" + ".zip"):
                 embedded_targets = load_pickled_object(decompress_file(stored_embedded_targets+".pickle"+".zip"))
+                print('targets loaded')
             else:
                 embedded_targets = encode_targets(targets, model)
                 pickle_object(stored_embedded_targets, embedded_targets)
@@ -143,7 +147,7 @@ def run():
     for ref_feature in args.referential_similarity_measures:
         all_features.append(ref_feature)
         stored_entities_queries = caching_directory + "/queries_" + str(ref_feature)
-        stored_entities_targets = caching_directory + "/targets_" + str(ref_feature)
+        stored_entities_targets = caching_directory_targets + "/targets_" + str(ref_feature)
         stored_sim_scores = caching_directory + "/sim_scores_" + ref_feature
         if os.path.exists(stored_sim_scores + ".pickle" + ".zip"):
             sim_scores_to_store = load_pickled_object(decompress_file(stored_sim_scores+".pickle"+".zip"))
@@ -191,7 +195,7 @@ def run():
     for lex_feature in args.lexical_similarity_measures:
         all_features.append(lex_feature)
         stored_entities_queries = caching_directory + "/queries_" + str(lex_feature)
-        stored_entities_targets = caching_directory + "/targets_" + str(lex_feature)
+        stored_entities_targets = caching_directory_targets + "/targets_" + str(lex_feature)
         stored_sim_scores = caching_directory + "/sim_scores_" + lex_feature
         if os.path.exists(stored_sim_scores + ".pickle" + ".zip"):
             sim_scores_to_store = load_pickled_object(decompress_file(stored_sim_scores+".pickle"+".zip"))

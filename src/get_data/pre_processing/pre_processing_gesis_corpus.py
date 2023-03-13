@@ -115,7 +115,7 @@ def create_queries_for_document(document_n, queries_pp=False):
         load_classifier_and_predict_variables(queries_data_path)
 
 
-#create_queries_for_document("11155", queries_pp=True)
+create_queries_for_document("19524")#, queries_pp=True)
 
 def get_all_queries():
 
@@ -138,7 +138,7 @@ def get_all_queries():
 
     all_queries_df.to_csv(queries_data_path, sep='\t', header=False, index=False)
 
-get_all_queries()
+#get_all_queries()
 
 def prepare_all_targets():
     all_docs = os.listdir(path=DATA_PATH + "gesis_unsup/vocab")

@@ -53,6 +53,7 @@ def run():
                         help='If selected re-ranking is based on the conjuction of fifferent features, not their mean.')
     parser.add_argument('--ranking_only', action="store_true",
                         help='If selected all targets are selected as candidates.')
+    parser.add_argument('--gesis_unsup', action="store_true", help='cache targets for gesis unsup')
     parser.add_argument('-sentence_embedding_models', type=str, nargs='+',
                     default=[],
                     help='Pass a list of sentence embedding models hosted by Huggingface or Tensorflow or simply pass "infersent" to use the infersent encoder.')
@@ -73,6 +74,8 @@ def run():
     stored_sim_scores: {query_id: list of sim scores for all targets in order of original targets}
     """
     caching_directory = DATA_PATH + "cache/" + args.data
+    if args.gesis_unsup:
+        caching_directory_targets = DATA_PATH + "cache/gesis_unsup_labels"
     Path(caching_directory).mkdir(parents=True, exist_ok=True)
     queries = get_queries(args.queries)
     targets = get_targets(args.targets)
@@ -118,7 +121,7 @@ def run():
         else:
             model_name = str(model)
         stored_embedded_queries = caching_directory + "/embedded_queries_" + model_name
-        stored_embedded_targets = caching_directory + "/embedded_targets_" + model_name
+        stored_embedded_targets = caching_directory_targets + "/embedded_targets_" + model_name
         stored_sim_scores = caching_directory + "/sim_scores_" + model_name
         sim_scores_to_store = {}
         if os.path.exists(stored_sim_scores + ".pickle" + ".zip"):
@@ -180,7 +183,7 @@ def run():
     for ref_feature in args.referential_similarity_measures:
         all_features.append(ref_feature)
         stored_entities_queries = caching_directory + "/queries_" + str(ref_feature)
-        stored_entities_targets = caching_directory + "/targets_" + str(ref_feature)
+        stored_entities_targets = caching_directory_targets + "/targets_" + str(ref_feature)
         stored_sim_scores = caching_directory + "/sim_scores_" + ref_feature
         sim_scores_to_store = {}
         if os.path.exists(stored_sim_scores + ".pickle" + ".zip"):
@@ -243,7 +246,7 @@ def run():
     for lex_feature in args.lexical_similarity_measures:
         all_features.append(lex_feature)
         stored_entities_queries = caching_directory + "/queries_" + str(lex_feature)
-        stored_entities_targets = caching_directory + "/targets_" + str(lex_feature)
+        stored_entities_targets = caching_directory_targets + "/targets_" + str(lex_feature)
         stored_sim_scores = caching_directory + "/sim_scores_" + lex_feature
         sim_scores_to_store = {}
         if os.path.exists(stored_sim_scores + ".pickle" + ".zip"):
