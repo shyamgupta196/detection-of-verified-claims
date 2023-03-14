@@ -51,7 +51,7 @@ def run():
     data_name_queries = '11155/11155_pp'
     data_name_targets = 'gesis_unsup_labels'
     data_name_cache = '11155'
-    data_name = '11155/11155_syn'
+    data_name = '11155/11155_spacy_ne'
 
     subprocess.call(["python",
                      "../../src/re_ranking/re_ranking.py",
@@ -65,10 +65,10 @@ def run():
                      "--ranking_only",
                      "--union",
                      #'-sentence_embedding_models', "sentence-transformers/sentence-t5-base", "all-mpnet-base-v2", "princeton-nlp/sup-simcse-roberta-large",#, "https://tfhub.dev/google/universal-sentence-encoder/4"])
-                     #'-referential_similarity_measures', "synonym_similarity", "ne_similarity",
+                     '-referential_similarity_measures', "spacy_ne_similarity"
                      #'-lexical_similarity_measures', "similar_words_ratio", "similar_words_ratio_length",
                      #'-string_similarity_measures', "sequence_matching", "levenshtein",
-                     '-discrete_similarity_measures', "synonym_similarity"
+                     #'-discrete_similarity_measures', "synonym_similarity"
                      ])
 
 

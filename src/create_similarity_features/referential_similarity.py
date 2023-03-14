@@ -4,6 +4,7 @@ from nltk import word_tokenize
 from nltk.corpus import wordnet as wn
 
 #nltk.download('wordnet')
+import en_core_web_sm
 
 
 def get_named_entities_of_sentence(sentence, entity_fisher):
@@ -23,12 +24,21 @@ def get_named_entities_of_sentence(sentence, entity_fisher):
     return entity_list
 
 
+def get_named_spacy_entities_of_sentence(sentence, nlp):
+    doc = nlp(sentence)
+    return [X.text for X in doc.ents]
+
+
 def get_sequence_entities(sequence_dictionary, ref_feature):
     entity_dict = {}
     if ref_feature == "ne_similarity":
         entity_fisher = nerd_client.NerdClient()
         for id, text in sequence_dictionary.items():
             entity_dict[id] = get_named_entities_of_sentence(text, entity_fisher)
+    elif ref_feature == "spacy_ne_similarity":
+        nlp = en_core_web_sm.load()
+        for id, text in sequence_dictionary.items():
+            entity_dict[id] = get_named_spacy_entities_of_sentence(text, nlp)
     elif ref_feature == "synonym_similarity":
         for id, text in sequence_dictionary.items():
             pp_text = set(word_tokenize(text))
