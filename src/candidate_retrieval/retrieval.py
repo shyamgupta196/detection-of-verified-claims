@@ -31,24 +31,25 @@ def run():
     parser.add_argument('queries', type=str, help='Input queries path as tsv file.')
     parser.add_argument('targets', type=str, help='Input targets path as tsv file.')
     # parameters
+    parser.add_argument('data_cache', type=str, help='Name under which the cached documents should be stored.')
     parser.add_argument('data', type=str, help='Name under which the documents should be stored.')
     parser.add_argument('similarity_measure', type=str, default='braycurtis', help='Distance measure for sentence embeddings')
     parser.add_argument('k', type=int, default=100, help='How many targets per queries should be retrieved')
     parser.add_argument('--union_of_top_k_per_feature', action="store_true",
                         help='How to combine the features: either take mean of different features or union of top k per feature. If not selected teh output is the top k of mean of features.')
     parser.add_argument('--gesis_unsup', action="store_true", help = 'cache targets for gesis unsup')
-    parser.add_argument('-sentence_embedding_models', type=str, nargs='+',
-                    default=[],
+    parser.add_argument('-sentence_embedding_models', type=str, nargs='+', default=[],
                     help='Pass a list of sentence embedding models hosted by Huggingface or Tensorflow or simply pass "infersent" to use the infersent encoder.')
     parser.add_argument('-referential_similarity_measures', type=str, nargs='+', default=[])
     parser.add_argument('-lexical_similarity_measures', type=str, nargs='+', default=[],
                         help='Pass a list of lexical similarity measures to use')
     parser.add_argument('-string_similarity_measures', type=str, nargs='+', default=[])
+    parser.add_argument('-discrete_similarity_measures', type=str, nargs='+', default=[])
     args = parser.parse_args()
     """
     Name datapaths and load queries and targets.
     """
-    caching_directory = DATA_PATH + "cache/" + args.data
+    caching_directory = DATA_PATH + "cache/" + args.data_cache
     if args.gesis_unsup:
         caching_directory_targets = DATA_PATH + "cache/gesis_unsup_labels"
     Path(caching_directory).mkdir(parents=True, exist_ok=True)
@@ -181,6 +182,8 @@ def run():
                         len_intersection = len(query_entities.intersection(target_entities))
                         ratio = (100/(len_query_entities+len_target_entities))*len_intersection
                         sim_scores[idx] = ratio
+                else:
+                    sim_scores[idx] = 0
                 all_sim_scores[query_id].append(sim_scores)
                 sim_scores_to_store[query_id] = sim_scores
             pickle_object(stored_sim_scores, sim_scores_to_store)
@@ -260,6 +263,58 @@ def run():
                 all_sim_scores[query_id].append(sim_scores)
             pickle_object(stored_sim_scores, sim_scores_to_store)
             compress_file(stored_sim_scores + ".pickle")
+            os.remove(stored_sim_scores + ".pickle")            
+    """
+    5. For all discrete similarity measures\
+    2.1 get entities for all queries and cache or load from cache\
+    2.2. get entities for all targets and cache or load from cache\
+    2.3. Calculate all similarity scores for one query and its *candidate targets* or load from cache -> value between 0 and 100 and cache
+    """
+    for discrete_feature in args.discrete_similarity_measures:
+        all_features.append(discrete_feature)
+        stored_entities_queries = caching_directory + "/queries_" + str(discrete_feature)
+        stored_entities_targets = caching_directory_targets + "/targets_" + str(discrete_feature)
+        stored_sim_scores = caching_directory + "/sim_scores_" + discrete_feature + "_discrete"
+        if os.path.exists(stored_sim_scores + ".pickle" + ".zip"):
+            sim_scores_to_store = load_pickled_object(decompress_file(stored_sim_scores+".pickle"+".zip"))
+            for query_id in list(queries.keys()):
+                all_sim_scores[query_id].append(sim_scores_to_store[query_id])
+        else:
+            sim_scores_to_store = {}
+            if os.path.exists(stored_entities_queries + ".pickle" + ".zip"):
+                entities_queries = load_pickled_object(decompress_file(stored_entities_queries+".pickle"+".zip"))
+            else:
+                if discrete_feature == "similar_words_ratio" or lex_feature == "similar_words_ratio_length":
+                    entities_queries = get_lexical_entities(queries, discrete_feature)
+                else:
+                    entities_queries = get_sequence_entities(queries, discrete_feature)
+                pickle_object(stored_entities_queries, entities_queries)
+                compress_file(stored_entities_queries + ".pickle")
+                os.remove(stored_entities_queries + ".pickle")
+            if os.path.exists(stored_entities_targets + ".pickle" + ".zip"):
+                entities_targets = load_pickled_object(decompress_file(stored_entities_targets+".pickle"+".zip"))
+            else:
+                if discrete_feature == "similar_words_ratio" or lex_feature == "similar_words_ratio_length":
+                    entities_targets = get_lexical_entities(targets, discrete_feature)
+                else:
+                    entities_targets = get_sequence_entities(targets, discrete_feature)
+                pickle_object(stored_entities_targets, entities_targets)
+                compress_file(stored_entities_targets + ".pickle")
+                os.remove(stored_entities_targets + ".pickle")
+            for query_id in list(queries.keys()):
+                query_entities = set(entities_queries[query_id])
+                sim_scores = np.zeros(len(list(targets.keys())))
+                if query_entities:
+                    for idx, target_id in enumerate(list(targets.keys())):
+                        target_entities = set(entities_targets[target_id])
+                        len_intersection = len(query_entities.intersection(target_entities))
+                        sim_scores[idx] = len_intersection
+                else:
+                    sim_scores[idx] = 0
+                all_sim_scores[query_id].append(sim_scores)
+                sim_scores_to_store[query_id] = sim_scores
+            pickle_object(stored_sim_scores, sim_scores_to_store)
+            compress_file(stored_sim_scores + ".pickle")
             os.remove(stored_sim_scores + ".pickle")
     """
     Evaluation step:
@@ -272,9 +327,9 @@ def run():
         sim_scores_mean = np.mean(np.mean(sim_scores, axis=0), axis=0)
         print(round(sim_scores_mean, 3))
     """
-    5. get top k targets per query:
-    5.1. either create union of features and compute top k
-    5.2. or compute mean of features and compute top k  
+    6. get top k targets per query:
+    6.1. either create union of features and compute top k
+    6.2. or compute mean of features and compute top k  
     """
     output = {}
     for query_id in list(queries.keys()):

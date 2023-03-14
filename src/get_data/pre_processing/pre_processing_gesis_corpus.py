@@ -99,8 +99,8 @@ def create_queries_for_document(document_n, queries_pp=False):
         document = json.load(f)
 
     if queries_pp:
-        Path(DATA_PATH + document_n+ "_pp").mkdir(parents=True, exist_ok=True)
-        queries_data_path = DATA_PATH + document_n + "_pp/queries.tsv"
+        Path(DATA_PATH + document_n+"/"+document_n+ "_pp").mkdir(parents=True, exist_ok=True)
+        queries_data_path = DATA_PATH + document_n+"/"+document_n + "_pp/queries.tsv"
     else:
         Path(DATA_PATH + document_n).mkdir(parents=True, exist_ok=True)
         queries_data_path = DATA_PATH + document_n + "/queries.tsv"

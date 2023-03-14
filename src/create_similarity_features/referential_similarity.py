@@ -3,7 +3,7 @@ from nerd import nerd_client
 from nltk import word_tokenize
 from nltk.corpus import wordnet as wn
 
-nltk.download('wordnet')
+#nltk.download('wordnet')
 
 
 def get_named_entities_of_sentence(sentence, entity_fisher):
