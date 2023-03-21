@@ -35,20 +35,18 @@ def load_pickled_object(file_object):
 
 
 def get_queries(query_path):
-    df = pd.read_csv(query_path, sep = '\t', names=['id', 'query'], dtype = str)
+    df = pd.read_csv(query_path, sep='\t', names=['id', 'query'], dtype=str)
     return df.set_index('id')['query'].to_dict()
 
 
 def get_predicted_queries_and_targets_df(query_path):
-    df = pd.read_csv(query_path, sep = '\t', names=['query', 'Q0', 'target', '1', 'score', 'tag'], dtype = str, index_col=False)
+    df = pd.read_csv(query_path, sep='\t', names=['query', 'Q0', 'target', '1', 'score', 'tag'], dtype = str, index_col=False)
     return df
 
 
 def get_correct_targets(query_path):
-    df = pd.read_csv(query_path, sep = '\t', names=['query', '0', 'target', '1'], dtype = str)
-
+    df = pd.read_csv(query_path, sep = '\t', names=['query', '0', 'target', '1'], dtype=str)
     dict = df.groupby('query')[['target']].apply(lambda g: g.values.tolist()).to_dict()
-    #df.drop(['0', '1'], axis=1).set_index('query')
     return dict
 
 

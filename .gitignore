@@ -156,4 +156,9 @@ data/clef_2022_checkthat_2a_english
 data/training/clef_2022_checkthat_2a_english
 data/training/sv_ident_val_fields_1
 
+src/get_data/test_data/sv_ident_trial_en.py
+src/get_data/test_data/sv_ident_val.py
+
+src/get_data/pre_processing
+
 data

@@ -1,6 +1,51 @@
 
 # SimBa
 
+## Results
+
+ '-sentence_embedding_models', "all-mpnet-base-v2", "princeton-nlp/sup-simcse-roberta-large", "sentence-transformers/sentence-t5-base", "https://tfhub.dev/google/universal-sentence-encoder/4",
+ '-lexical_similarity_measures', "similar_words_ratio"
+
+| Datast  | Map@1 | Map@3 | Map@5 |  
+|---|---|---|---|
+| 2020 2a English  | 0.9475 | 0.9658 | 0.9658 |
+| 2021 2a English  | 0.8564 | 0.8993 | 0.9018 |      
+| 2021 2b English  | 0.4114 | 0.4578 | 0.4635 | 
+| 2022 2a English  | 0.9139 | 0.9298 | 0.9310 | 
+| 2022 2b English  | 0.4462 | 0.5026 | 0.5133 |
+
+only "all-mpnet-base-v2" as retrieval
+
+| Datast  | Map@1 | Map@3 | Map@5 |  
+|---|---|---|---|
+| 2020 2a English  | 0.9425  |  0.9617  |  0.9617
+| 2021 2a English  | 0.8614  |  0.9035  |  0.9035     
+| 2021 2b English  | 0.4051  |  0.4652  |  0.4684 
+| 2022 2a English  | 0.9139  |  0.9306  |  0.9337  
+| 2022 2b English  | 0.4615  |  0.5231  |  0.5308
+
+ '-sentence_embedding_models', "all-mpnet-base-v2", "princeton-nlp/sup-simcse-roberta-large", "sentence-transformers/sentence-t5-base", 
+ '-lexical_similarity_measures', "similar_words_ratio",
+
+| Datast  | Map@1 | Map@3 | Map@5 |  
+|---|---|---|---|
+| 2020 2a English  | 0.9425 | 0.9592 | 0.9614|
+| 2021 2a English  | 0.8911 | 0.9208 | 0.9243|   
+| 2021 2b English  | 0.3987 | 0.4536 | 0.4561|
+| 2022 2a English  | 0.9139 | 0.9290 | 0.9312|
+| 2022 2b English  | 0.4308 | 0.4974 | 0.5044|
+
+only "all-mpnet-base-v2" as retrieval
+
+| Datast  | Map@1 | Map@3 | Map@5 |  
+|---|---|---|---|
+| 2020 2a English  | 0.9425 |   0.9592 |   0.9604 |
+| 2021 2a English  | 0.8911 |   0.9208 |   0.9243 |   
+| 2021 2b English  | 0.4177 |   0.4620 |   0.4620 |
+| 2022 2a English  | 0.9139 |   0.9290 |   0.9312 | 
+| 2022 2b English  | 0.4769 |   0.5308 |   0.5346 |
+
+
 ## Arcitecture
 
 1. Retrieval

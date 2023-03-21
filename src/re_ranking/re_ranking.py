@@ -2,11 +2,14 @@ import argparse
 import os
 import numpy as np
 import torch
+import tensorflow as tf
 import pandas as pd
 from sklearn import svm, naive_bayes, preprocessing
 from sklearn.feature_selection import VarianceThreshold, f_classif, SelectKBest
 from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import StandardScaler
+from tensorflow.python.framework.ops import EagerTensor
+from tensorflow.python.ops.numpy_ops import np_config
 
 from src.create_similarity_features.lexical_similarity import get_lexical_entities
 from src.create_similarity_features.referential_similarity import get_sequence_entities
@@ -55,6 +58,7 @@ def run():
     parser.add_argument('--ranking_only', action="store_true",
                         help='If selected all targets are selected as candidates.')
     parser.add_argument('--gesis_unsup', action="store_true", help='cache targets for gesis unsup')
+    parser.add_argument('--corpus_sizes', action="store_true", help='cache targets only (for the time measurement of different corpus sizes)')
     parser.add_argument('-sentence_embedding_models', type=str, nargs='+',
                     default=[],
                     help='Pass a list of sentence embedding models hosted by Huggingface or Tensorflow or simply pass "infersent" to use the infersent encoder.')
@@ -62,6 +66,10 @@ def run():
                         default=[])
     parser.add_argument('-lexical_similarity_measures', type=str, nargs='+', default=[],
                         help='Pass a list of lexical similarity measures to use')
+
+    # parser.add_argument('-string_similarity_measures', type=str, nargs='+', default=["levenshtein_similarity"])
+    # parser.add_argument('-referential_similarity_measures', type=str, nargs='+',
+    #                     default=["ne_similarity"])
     parser.add_argument('-string_similarity_measures', type=str, nargs='+', default=[])
     parser.add_argument('-discrete_similarity_measures', type=str, nargs='+', default=[])
     args = parser.parse_args()
@@ -78,7 +86,12 @@ def run():
     caching_directory = DATA_PATH + "cache/" + args.data_cache
     if args.gesis_unsup:
         caching_directory_targets = DATA_PATH + "cache/gesis_unsup_labels"
+    elif args.corpus_sizes:
+        caching_directory_targets = DATA_PATH + "cache/corpus_size_targets_"+args.data
+    else:
+        caching_directory_targets = caching_directory
     Path(caching_directory).mkdir(parents=True, exist_ok=True)
+    Path(caching_directory_targets).mkdir(parents=True, exist_ok=True)
     queries = get_queries(args.queries)
     targets = get_targets(args.targets)
     original_target_ids = list(targets.keys())
@@ -117,6 +130,7 @@ def run():
     1.3. Calculate all similarity scores for one query and its *candidate targets* or load from cache -> value between 0 and 100 and cache   
     """
     for model in args.sentence_embedding_models:
+        print(model)
         all_features.append(model)
         if "/" or ":" or "." in str(model):
             model_name = str(model).replace("/", "_").replace(":", "_").replace(".", "_")
@@ -139,27 +153,31 @@ def run():
         else:
             if os.path.exists(stored_embedded_queries + ".pickle" + ".zip"):
                 embedded_queries = load_pickled_object(decompress_file(stored_embedded_queries+".pickle"+".zip"))
+                print('queries loaded')
             else:
+                print('compute queries')
                 embedded_queries = encode_queries(queries, model)
                 pickle_object(stored_embedded_queries, embedded_queries)
                 compress_file(stored_embedded_queries + ".pickle")
                 os.remove(stored_embedded_queries + ".pickle")
             if os.path.exists(stored_embedded_targets + ".pickle" + ".zip"):
                 embedded_targets = load_pickled_object(decompress_file(stored_embedded_targets+".pickle"+".zip"))
+                print('targets loaded')
                 # keep only candidate targets
                 embedded_candidate_targets = {key: embedded_targets[key] for key in candidate_target_ids}
                 #embedded_candidate_targets = dict((k[embedded_targets.values()]) for k in candidate_target_ids if k in list(embedded_targets.values()))
-                print('embedded_candidate_targets loaded')
-                print(len(embedded_candidate_targets))
             else:
+                print('compute targets')
                 embedded_candidate_targets = encode_targets(candidate_targets, model)
-                print('embedded_candidate_targets computed')
                 if args.ranking_only:
                     pickle_object(stored_embedded_targets, embedded_candidate_targets)
                     compress_file(stored_embedded_targets + ".pickle")
                     os.remove(stored_embedded_targets + ".pickle")
             for query_id in list(queries.keys()):
-                query_embedding = embedded_queries[query_id].reshape(1, -1)
+                if type(embedded_queries[query_id]) == EagerTensor:
+                    query_embedding = tf.experimental.numpy.reshape(embedded_queries[query_id], (1, -1))
+                else:
+                    query_embedding = embedded_queries[query_id].reshape(1, -1)
                 current_candidate_ids = candidates[query_id]
                 current_embedded_candidate_targets = {key: embedded_candidate_targets[key] for key in current_candidate_ids}
                 embedded_targets_array = np.array(list(current_embedded_candidate_targets.values()))
@@ -183,6 +201,7 @@ def run():
     2.3. Calculate all similarity scores for one query and its *candidate targets* or load from cache -> value between 0 and 100 and cache
     """
     for ref_feature in args.referential_similarity_measures:
+        print(ref_feature)
         all_features.append(ref_feature)
         stored_entities_queries = caching_directory + "/queries_" + str(ref_feature)
         stored_entities_targets = caching_directory_targets + "/targets_" + str(ref_feature)
@@ -201,15 +220,19 @@ def run():
         else:
             if os.path.exists(stored_entities_queries + ".pickle" + ".zip"):
                 entities_queries = load_pickled_object(decompress_file(stored_entities_queries+".pickle"+".zip"))
+                print('queries loaded')
             else:
+                print('compute queries')
                 entities_queries = get_sequence_entities(queries, ref_feature)
                 pickle_object(stored_entities_queries, entities_queries)
                 compress_file(stored_entities_queries + ".pickle")
                 os.remove(stored_entities_queries + ".pickle")
             if os.path.exists(stored_entities_targets + ".pickle" + ".zip"):
                 entities_targets = load_pickled_object(decompress_file(stored_entities_targets+".pickle"+".zip"))
+                print('targets loaded')
                 entities_candidate_targets = {k: entities_targets[k] for k in candidate_target_ids}
             else:
+                print('compute targets')
                 entities_candidate_targets = get_sequence_entities(candidate_targets, ref_feature)
                 if args.ranking_only:
                     pickle_object(stored_entities_targets, entities_candidate_targets)
@@ -230,7 +253,7 @@ def run():
                     sim_scores[idx] = 0
                 current_candidate_ids = candidates[query_id]
                 current_sim_scores = sim_scores
-                sim_scores_dict = dict(zip(original_target_ids, current_sim_scores))
+                sim_scores_dict = dict(zip(current_candidate_ids, current_sim_scores))
                 n_targets = len(current_candidate_ids)
                 c_list = [sim_scores_dict[target_id] for target_id in current_candidate_ids]
                 current_candidate_sim_scores = np.array(c_list).reshape(n_targets, )
@@ -247,6 +270,7 @@ def run():
     3.3. Calculate all similarity scores for all combinations -> value between 0 and 100 and cache
     """
     for lex_feature in args.lexical_similarity_measures:
+        print(lex_feature)
         all_features.append(lex_feature)
         stored_entities_queries = caching_directory + "/queries_" + str(lex_feature)
         stored_entities_targets = caching_directory_targets + "/targets_" + str(lex_feature)
@@ -265,15 +289,19 @@ def run():
         else:
             if os.path.exists(stored_entities_queries + ".pickle" + ".zip"):
                 entities_queries = load_pickled_object(decompress_file(stored_entities_queries+".pickle"+".zip"))
+                print('queries loaded')
             else:
+                print('compute queries')
                 entities_queries = get_lexical_entities(queries, lex_feature)
                 pickle_object(stored_entities_queries, entities_queries)
                 compress_file(stored_entities_queries + ".pickle")
                 os.remove(stored_entities_queries + ".pickle")
             if os.path.exists(stored_entities_targets + ".pickle" + ".zip"):
                 entities_targets = load_pickled_object(decompress_file(stored_entities_targets+".pickle"+".zip"))
+                print('targets loaded')
                 entities_candidate_targets = {k: entities_targets[k] for k in candidate_target_ids}
             else:
+                print('compute targets')
                 entities_candidate_targets = get_lexical_entities(candidate_targets, lex_feature)
                 if args.ranking_only:
                     pickle_object(stored_entities_targets, entities_candidate_targets)
@@ -296,7 +324,7 @@ def run():
                         sim_scores[idx] = ratio
                 current_candidate_ids = candidates[query_id]
                 current_sim_scores = sim_scores
-                sim_scores_dict = dict(zip(original_target_ids, current_sim_scores))
+                sim_scores_dict = dict(zip(current_candidate_ids, current_sim_scores))
                 n_targets = len(current_candidate_ids)
                 c_list = [sim_scores_dict[target_id] for target_id in current_candidate_ids]
                 current_candidate_sim_scores = np.array(c_list).reshape(n_targets, )
@@ -311,6 +339,7 @@ def run():
         4.1 Calculate all similarity scores for all combinations -> value between 0 and 100 and cache
     """
     for string_feature in args.string_similarity_measures:
+        print(string_feature)
         all_features.append(string_feature)
         stored_sim_scores = caching_directory + "/sim_scores_" + string_feature
         sim_scores_to_store = {}
@@ -333,7 +362,7 @@ def run():
                     sim_scores[idx] = get_string_similarity(query, target, string_feature)
                 current_candidate_ids = candidates[query_id]
                 current_sim_scores = sim_scores
-                sim_scores_dict = dict(zip(original_target_ids, current_sim_scores))
+                sim_scores_dict = dict(zip(current_candidate_ids, current_sim_scores))
                 n_targets = len(current_candidate_ids)
                 c_list = [sim_scores_dict[target_id] for target_id in current_candidate_ids]
                 current_candidate_sim_scores = np.array(c_list).reshape(n_targets, )
@@ -350,6 +379,7 @@ def run():
        5.3. Calculate all similarity scores for one query and its *candidate targets* or load from cache -> value between 0 and 100 and cache
      """
     for discrete_feature in args.discrete_similarity_measures:
+        print(discrete_feature)
         all_features.append(discrete_feature)
         stored_entities_queries = caching_directory + "/queries_" + str(discrete_feature)
         stored_entities_targets = caching_directory_targets + "/targets_" + str(discrete_feature)
@@ -368,7 +398,9 @@ def run():
         else:
             if os.path.exists(stored_entities_queries + ".pickle" + ".zip"):
                 entities_queries = load_pickled_object(decompress_file(stored_entities_queries + ".pickle" + ".zip"))
+                print('queries loaded')
             else:
+                print('compute queries')
                 if discrete_feature == "similar_words_ratio" or lex_feature == "similar_words_ratio_length":
                     entities_queries = get_lexical_entities(queries, lex_feature)
                 else:
@@ -378,8 +410,10 @@ def run():
                 os.remove(stored_entities_queries + ".pickle")
             if os.path.exists(stored_entities_targets + ".pickle" + ".zip"):
                 entities_targets = load_pickled_object(decompress_file(stored_entities_targets + ".pickle" + ".zip"))
+                print('targets loaded')
                 entities_candidate_targets = {k: entities_targets[k] for k in candidate_target_ids}
             else:
+                print('compute targets')
                 if discrete_feature == "similar_words_ratio" or lex_feature == "similar_words_ratio_length":
                     entities_candidate_targets = get_lexical_entities(candidate_targets, discrete_feature)
                 else:
@@ -400,7 +434,7 @@ def run():
                     sim_scores[idx] = 0
                 current_candidate_ids = candidates[query_id]
                 current_sim_scores = sim_scores
-                sim_scores_dict = dict(zip(original_target_ids, current_sim_scores))
+                sim_scores_dict = dict(zip(current_candidate_ids, current_sim_scores))
                 n_targets = len(current_candidate_ids)
                 c_list = [sim_scores_dict[target_id] for target_id in current_candidate_ids]
                 current_candidate_sim_scores = np.array(c_list).reshape(n_targets, )
@@ -461,6 +495,8 @@ def run():
                 targets_and_sim_scores = {x: targets_and_sim_scores[x] for x in list(targets_and_sim_scores)[:args.k]}
                 output[query_id] = targets_and_sim_scores
                 output_dict_to_pred_qrels(output, output_path)
+
+
 
 
 if __name__ == "__main__":

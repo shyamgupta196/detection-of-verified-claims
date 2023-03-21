@@ -67,7 +67,7 @@ def create_pred_file_with_text(data_name_orig, data_name, data_name_targets, sco
 
 data_name_queries = '11155/11155_pp'
 data_name_targets = 'gesis_unsup_labels'
-data_name = '11155/11155_syn'
+data_name = '11155/11155_spacy_ne'
 create_pred_file_with_text(data_name_queries, data_name, data_name_targets, score_threshold=3)
 
 # data_name_queries = '11658_pp_queries'

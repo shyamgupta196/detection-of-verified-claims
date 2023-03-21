@@ -38,6 +38,8 @@ def run():
     parser.add_argument('--union_of_top_k_per_feature', action="store_true",
                         help='How to combine the features: either take mean of different features or union of top k per feature. If not selected teh output is the top k of mean of features.')
     parser.add_argument('--gesis_unsup', action="store_true", help = 'cache targets for gesis unsup')
+    parser.add_argument('--corpus_sizes', action="store_true",
+                        help='cache targets only (for the time measurement of different corpus sizes)')
     parser.add_argument('-sentence_embedding_models', type=str, nargs='+', default=[],
                     help='Pass a list of sentence embedding models hosted by Huggingface or Tensorflow or simply pass "infersent" to use the infersent encoder.')
     parser.add_argument('-referential_similarity_measures', type=str, nargs='+', default=[])
@@ -52,7 +54,13 @@ def run():
     caching_directory = DATA_PATH + "cache/" + args.data_cache
     if args.gesis_unsup:
         caching_directory_targets = DATA_PATH + "cache/gesis_unsup_labels"
+    elif args.corpus_sizes:
+        caching_directory_targets = DATA_PATH + "cache/corpus_size_targets_"+args.data
+    else:
+        caching_directory_targets = caching_directory
+    print(caching_directory_targets)
     Path(caching_directory).mkdir(parents=True, exist_ok=True)
+    Path(caching_directory_targets).mkdir(parents=True, exist_ok=True)
     queries = get_queries(args.queries)
     targets = get_targets(args.targets)
     all_features = []
@@ -73,21 +81,21 @@ def run():
     0.2 targets
     0.3 pairs
     """
-    token_lens = {}
-    stored_token_lens = caching_directory + "/token_lens"
-    if os.path.exists(stored_token_lens + ".pickle" + ".zip"):
-        token_lens = load_pickled_object(decompress_file(stored_token_lens+".pickle"+".zip"))
-    else:
-        for query_id, query_text in queries.items():
-            n_query_tokens = get_number_of_tokens(query_text)
-            this_query_token_lens = {}
-            for target_id, target_text in targets.items():
-                n_target_tokens = get_number_of_tokens(target_text)
-                this_query_token_lens[target_id] = n_query_tokens + n_target_tokens
-            token_lens[query_id] = this_query_token_lens
-        pickle_object(stored_token_lens, token_lens)
-        compress_file(stored_token_lens + ".pickle")
-        os.remove(stored_token_lens + ".pickle")
+    # token_lens = {}
+    # stored_token_lens = caching_directory + "/token_lens"
+    # if os.path.exists(stored_token_lens + ".pickle" + ".zip"):
+    #     token_lens = load_pickled_object(decompress_file(stored_token_lens+".pickle"+".zip"))
+    # else:
+    #     for query_id, query_text in queries.items():
+    #         n_query_tokens = get_number_of_tokens(query_text)
+    #         this_query_token_lens = {}
+    #         for target_id, target_text in targets.items():
+    #             n_target_tokens = get_number_of_tokens(target_text)
+    #             this_query_token_lens[target_id] = n_query_tokens + n_target_tokens
+    #         token_lens[query_id] = this_query_token_lens
+    #     pickle_object(stored_token_lens, token_lens)
+    #     compress_file(stored_token_lens + ".pickle")
+    #     os.remove(stored_token_lens + ".pickle")
     """
     1. For all sentence embedding models:
     1.1 Embed all queries and cache
@@ -95,6 +103,7 @@ def run():
     1.3. Calculate all similarity scores for all combinations -> value between 0 and 100 and cache
     """
     for model in args.sentence_embedding_models:
+        print(model)
         all_features.append(model)
         if "/" or ":" or "." in str(model):
             model_name = str(model).replace("/", "_").replace(":", "_").replace(".", "_")
@@ -111,7 +120,9 @@ def run():
             sim_scores_to_store = {}
             if os.path.exists(stored_embedded_queries + ".pickle" + ".zip"):
                 embedded_queries = load_pickled_object(decompress_file(stored_embedded_queries+".pickle"+".zip"))
+                print('queries loaded')
             else:
+                print('compute queries')
                 embedded_queries = encode_queries(queries, model)
                 pickle_object(stored_embedded_queries, embedded_queries)
                 compress_file(stored_embedded_queries + ".pickle")
@@ -120,6 +131,7 @@ def run():
                 embedded_targets = load_pickled_object(decompress_file(stored_embedded_targets+".pickle"+".zip"))
                 print('targets loaded')
             else:
+                print('compute targets')
                 embedded_targets = encode_targets(targets, model)
                 pickle_object(stored_embedded_targets, embedded_targets)
                 compress_file(stored_embedded_targets + ".pickle")
@@ -146,6 +158,7 @@ def run():
     2.3. Calculate all similarity scores for one query and its *candidate targets* or load from cache -> value between 0 and 100 and cache
     """
     for ref_feature in args.referential_similarity_measures:
+        print(ref_feature)
         all_features.append(ref_feature)
         stored_entities_queries = caching_directory + "/queries_" + str(ref_feature)
         stored_entities_targets = caching_directory_targets + "/targets_" + str(ref_feature)
@@ -158,15 +171,18 @@ def run():
             sim_scores_to_store = {}
             if os.path.exists(stored_entities_queries + ".pickle" + ".zip"):
                 entities_queries = load_pickled_object(decompress_file(stored_entities_queries+".pickle"+".zip"))
+                print('queries loaded')
             else:
+                print('compute queries')
                 entities_queries = get_sequence_entities(queries, ref_feature)
-                print(entities_queries)
                 pickle_object(stored_entities_queries, entities_queries)
                 compress_file(stored_entities_queries + ".pickle")
                 os.remove(stored_entities_queries + ".pickle")
             if os.path.exists(stored_entities_targets + ".pickle" + ".zip"):
                 entities_targets = load_pickled_object(decompress_file(stored_entities_targets+".pickle"+".zip"))
+                print('targets loaded')
             else:
+                print('compute targets')
                 entities_targets = get_sequence_entities(targets, ref_feature)
                 pickle_object(stored_entities_targets, entities_targets)
                 compress_file(stored_entities_targets + ".pickle")
@@ -196,6 +212,7 @@ def run():
     3.3. Calculate all similarity scores for all combinations -> value between 0 and 100 and cache
     """
     for lex_feature in args.lexical_similarity_measures:
+        print(lex_feature)
         all_features.append(lex_feature)
         stored_entities_queries = caching_directory + "/queries_" + str(lex_feature)
         stored_entities_targets = caching_directory_targets + "/targets_" + str(lex_feature)
@@ -208,14 +225,18 @@ def run():
             sim_scores_to_store = {}
             if os.path.exists(stored_entities_queries + ".pickle" + ".zip"):
                 entities_queries = load_pickled_object(decompress_file(stored_entities_queries+".pickle"+".zip"))
+                print('queries loaded')
             else:
+                print('compute queries')
                 entities_queries = get_lexical_entities(queries, lex_feature)
                 pickle_object(stored_entities_queries, entities_queries)
                 compress_file(stored_entities_queries + ".pickle")
                 os.remove(stored_entities_queries + ".pickle")
             if os.path.exists(stored_entities_targets + ".pickle" + ".zip"):
                 entities_targets = load_pickled_object(decompress_file(stored_entities_targets+".pickle"+".zip"))
+                print('targets loaded')
             else:
+                print('compute targets')
                 entities_targets = get_lexical_entities(targets, lex_feature)
                 pickle_object(stored_entities_targets, entities_targets)
                 compress_file(stored_entities_targets + ".pickle")
@@ -245,6 +266,7 @@ def run():
         4.1 Calculate all similarity scores for all combinations -> value between 0 and 100 and cache
     """
     for string_feature in args.string_similarity_measures:
+        print(string_feature)
         all_features.append(string_feature)
         stored_sim_scores = caching_directory + "/sim_scores_" + string_feature
         sim_scores_to_store = {}
@@ -271,6 +293,7 @@ def run():
     2.3. Calculate all similarity scores for one query and its *candidate targets* or load from cache -> value between 0 and 100 and cache
     """
     for discrete_feature in args.discrete_similarity_measures:
+        print(discrete_feature)
         all_features.append(discrete_feature)
         stored_entities_queries = caching_directory + "/queries_" + str(discrete_feature)
         stored_entities_targets = caching_directory_targets + "/targets_" + str(discrete_feature)
@@ -283,7 +306,9 @@ def run():
             sim_scores_to_store = {}
             if os.path.exists(stored_entities_queries + ".pickle" + ".zip"):
                 entities_queries = load_pickled_object(decompress_file(stored_entities_queries+".pickle"+".zip"))
+                print('queries loaded')
             else:
+                print('compute queries')
                 if discrete_feature == "similar_words_ratio" or lex_feature == "similar_words_ratio_length":
                     entities_queries = get_lexical_entities(queries, discrete_feature)
                 else:
@@ -293,7 +318,9 @@ def run():
                 os.remove(stored_entities_queries + ".pickle")
             if os.path.exists(stored_entities_targets + ".pickle" + ".zip"):
                 entities_targets = load_pickled_object(decompress_file(stored_entities_targets+".pickle"+".zip"))
+                print('targets loaded')
             else:
+                print('compute targets')
                 if discrete_feature == "similar_words_ratio" or lex_feature == "similar_words_ratio_length":
                     entities_targets = get_lexical_entities(targets, discrete_feature)
                 else:

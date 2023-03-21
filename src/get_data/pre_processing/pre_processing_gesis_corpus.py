@@ -115,7 +115,7 @@ def create_queries_for_document(document_n, queries_pp=False):
         load_classifier_and_predict_variables(queries_data_path)
 
 
-create_queries_for_document("19524")#, queries_pp=True)
+#create_queries_for_document("19524")#, queries_pp=True)
 
 def get_all_queries():
 
@@ -177,6 +177,48 @@ def prepare_all_targets():
     corpus_df.to_csv(targets_data_path, sep='\t', header=True, index=False)
 
 #prepare_all_targets()
+
+
+def prepare_all_targets():
+    all_docs = os.listdir(path=DATA_PATH + "gesis_unsup/vocab")
+    all_variable_parts = []
+    variable_fields_info = {}
+    for doc in all_docs:
+        with open(DATA_PATH + "gesis_unsup/vocab/"+doc, "rb") as f:
+            variables = pickle.load(f)
+        for variable in variables.items():
+            variable_fields = variable[1]['_source']
+            for field in variable_fields.keys():
+                if field in variable_fields_info.keys():
+                    variable_fields_info[field] += 1
+                else:
+                    variable_fields_info[field] = 0
+            all_variable_parts.extend(list(variable_fields.keys()))
+
+    all_variable_parts = list(set(all_variable_parts))
+    print(all_variable_parts)
+    columns = ['id'] + all_variable_parts
+    print(columns)
+    corpus_df = pd.DataFrame(columns=columns)
+    for doc in all_docs:
+        with open(DATA_PATH + "gesis_unsup/vocab/"+doc, "rb") as f:
+            variables = pickle.load(f)
+        for variable in variables.items():
+            this_row = []
+            id = variable[0]
+            this_row.append(id)
+            variable_fields = variable[1]['_source']
+            for column in columns[1:]:
+                if column in variable_fields.keys():
+                    this_row.append(variable_fields[column])
+                else:
+                    this_row.append("")
+            target_df = pd.DataFrame([this_row], columns=columns)
+            corpus_df = pd.concat([corpus_df, target_df], names=columns)
+    targets_data_path = DATA_PATH + "gesis_unsup/corpus_all"
+    corpus_df.to_csv(targets_data_path, sep='\t', header=True, index=False)
+
+prepare_all_targets()
 
 
 
