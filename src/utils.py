@@ -59,10 +59,21 @@ def get_targets(corpus_of_targets_filename):
                 v_claim = json.loads(j.read())
             targets[v_claim['vclaim_id']] = v_claim['vclaim']
     else:
-        df = pd.read_csv(corpus_of_targets_filename, sep='\t', dtype=str)
-        column_length = len(df.columns)
-        column_values = list(map(' '.join, df.iloc[:, 1:column_length].astype(str).values.tolist()))
-        targets = dict(zip(df.iloc[:, 0], column_values))
+        if "checkthat" in corpus_of_targets_filename or\
+        corpus_of_targets_filename == "../../2021-2a-vclaims.tsv" or \
+        corpus_of_targets_filename == "../../2021-2b-vclaims.tsv" or \
+        corpus_of_targets_filename == "../../2022-2a-vclaims.tsv" or \
+        corpus_of_targets_filename == "../../2022-2b-vclaims.tsv":
+            df = pd.read_csv(corpus_of_targets_filename, sep='\t', dtype=str, header=None)
+            df = df.iloc[:, :-1]
+            column_length = len(df.columns)
+            column_values = list(map(' '.join, df.iloc[:, 1:column_length].astype(str).values.tolist()))
+            targets = dict(zip(df.iloc[:, 0], column_values))
+        else:
+            df = pd.read_csv(corpus_of_targets_filename, sep='\t', dtype=str)
+            column_length = len(df.columns)
+            column_values = list(map(' '.join, df.iloc[:, 1:column_length].astype(str).values.tolist()))
+            targets = dict(zip(df.iloc[:, 0], column_values))
     return targets
 
 

@@ -142,6 +142,7 @@ def run():
         sim_scores_to_store = {}
         if os.path.exists(stored_sim_scores + ".pickle" + ".zip"):
             sim_scores_to_store = load_pickled_object(decompress_file(stored_sim_scores+".pickle"+".zip"))
+            print("loaded sim scores")
             for query_id in list(queries.keys()):
                 current_candidate_ids = candidates[query_id]
                 current_sim_scores = sim_scores_to_store[query_id]
@@ -183,9 +184,7 @@ def run():
                 embedded_targets_array = np.array(list(current_embedded_candidate_targets.values()))
                 sim_scores = (1 - cdist(query_embedding, embedded_targets_array,
                                         metric=args.similarity_measure)) * 100
-                #sim_scores_dict = dict(zip(current_candidate_ids, sim_scores))
                 n_targets = len(current_candidate_ids)
-                #c_list = [sim_scores_dict[target_id] for target_id in current_candidate_ids]
                 c_list = sim_scores.tolist()
                 current_candidate_sim_scores = np.array(c_list).reshape(n_targets, )
                 all_sim_scores[query_id].append(current_candidate_sim_scores)
@@ -209,6 +208,7 @@ def run():
         sim_scores_to_store = {}
         if os.path.exists(stored_sim_scores + ".pickle" + ".zip"):
             sim_scores_to_store = load_pickled_object(decompress_file(stored_sim_scores+".pickle"+".zip"))
+            print("loaded sim scores")
             for query_id in list(queries.keys()):
                 current_candidate_ids = candidates[query_id]
                 current_sim_scores = sim_scores_to_store[query_id]
@@ -239,24 +239,18 @@ def run():
                     compress_file(stored_entities_targets + ".pickle")
                     os.remove(stored_entities_targets + ".pickle")
             for query_id in list(queries.keys()):
+                current_candidate_ids = candidates[query_id]
                 query_entities = set(entities_queries[query_id])
-                sim_scores = np.zeros(len(list(candidate_targets.keys())))
+                sim_scores = np.zeros(len(current_candidate_ids))
                 if query_entities:
                     len_query_entities = len(query_entities)
-                    for idx, target_id in enumerate(list(candidate_targets.keys())):
+                    for idx, target_id in enumerate(current_candidate_ids):
                         target_entities = set(entities_candidate_targets[target_id])
                         len_target_entities = len(target_entities)
                         len_intersection = len(query_entities.intersection(target_entities))
                         ratio = (100/(len_query_entities+len_target_entities))*len_intersection
                         sim_scores[idx] = ratio
-                else:
-                    sim_scores[idx] = 0
-                current_candidate_ids = candidates[query_id]
-                current_sim_scores = sim_scores
-                sim_scores_dict = dict(zip(current_candidate_ids, current_sim_scores))
-                n_targets = len(current_candidate_ids)
-                c_list = [sim_scores_dict[target_id] for target_id in current_candidate_ids]
-                current_candidate_sim_scores = np.array(c_list).reshape(n_targets, )
+                current_candidate_sim_scores = sim_scores
                 all_sim_scores[query_id].append(current_candidate_sim_scores)
                 sim_scores_to_store[query_id] = current_candidate_sim_scores
             if args.ranking_only:
@@ -278,6 +272,7 @@ def run():
         sim_scores_to_store = {}
         if os.path.exists(stored_sim_scores + ".pickle" + ".zip"):
             sim_scores_to_store = load_pickled_object(decompress_file(stored_sim_scores+".pickle"+".zip"))
+            print("loaded sim scores")
             for query_id in list(queries.keys()):
                 current_candidate_ids = candidates[query_id]
                 current_sim_scores = sim_scores_to_store[query_id]
@@ -308,11 +303,12 @@ def run():
                     compress_file(stored_entities_targets + ".pickle")
                     os.remove(stored_entities_targets + ".pickle")
             for query_id in list(queries.keys()):
+                current_candidate_ids = candidates[query_id]
                 query_entities = set(entities_queries[query_id])
-                sim_scores = np.zeros(len(list(candidate_targets.keys())))
+                sim_scores = np.zeros(len(current_candidate_ids))
                 if query_entities:
                     len_query_entities = len(query_entities)
-                    for idx, target_id in enumerate(list(candidate_targets.keys())):
+                    for idx, target_id in enumerate(current_candidate_ids):
                         target_entities = set(entities_candidate_targets[target_id])
                         len_target_entities = len(target_entities)
                         len_intersection = len(query_entities.intersection(target_entities))
@@ -322,12 +318,7 @@ def run():
                         elif lex_feature == "similar_words_ratio_length":
                             ratio = (100/len_union)*len_intersection
                         sim_scores[idx] = ratio
-                current_candidate_ids = candidates[query_id]
-                current_sim_scores = sim_scores
-                sim_scores_dict = dict(zip(current_candidate_ids, current_sim_scores))
-                n_targets = len(current_candidate_ids)
-                c_list = [sim_scores_dict[target_id] for target_id in current_candidate_ids]
-                current_candidate_sim_scores = np.array(c_list).reshape(n_targets, )
+                current_candidate_sim_scores = sim_scores
                 all_sim_scores[query_id].append(current_candidate_sim_scores)
                 sim_scores_to_store[query_id] = current_candidate_sim_scores
             if args.ranking_only:
@@ -345,6 +336,7 @@ def run():
         sim_scores_to_store = {}
         if os.path.exists(stored_sim_scores + ".pickle" + ".zip"):
             sim_scores_to_store = load_pickled_object(decompress_file(stored_sim_scores+".pickle"+".zip"))
+            print("loaded sim scores")
             for query_id in list(queries.keys()):
                 current_candidate_ids = candidates[query_id]
                 current_sim_scores = sim_scores_to_store[query_id]
@@ -355,17 +347,13 @@ def run():
                 all_sim_scores[query_id].append(current_candidate_sim_scores)
         else:
             for query_id in list(queries.keys()):
-                sim_scores = np.zeros(len(list(candidate_targets.keys())))
-                for idx, target_id in enumerate(list(candidate_targets.keys())):
+                current_candidate_ids = candidates[query_id]
+                sim_scores = np.zeros(len(current_candidate_ids))
+                for idx, target_id in enumerate(current_candidate_ids):
                     query = queries[query_id]
                     target = candidate_targets[target_id]
                     sim_scores[idx] = get_string_similarity(query, target, string_feature)
-                current_candidate_ids = candidates[query_id]
-                current_sim_scores = sim_scores
-                sim_scores_dict = dict(zip(current_candidate_ids, current_sim_scores))
-                n_targets = len(current_candidate_ids)
-                c_list = [sim_scores_dict[target_id] for target_id in current_candidate_ids]
-                current_candidate_sim_scores = np.array(c_list).reshape(n_targets, )
+                current_candidate_sim_scores = sim_scores
                 all_sim_scores[query_id].append(current_candidate_sim_scores)
                 sim_scores_to_store[query_id] = current_candidate_sim_scores
             if args.ranking_only:
@@ -387,6 +375,7 @@ def run():
         sim_scores_to_store = {}
         if os.path.exists(stored_sim_scores + ".pickle" + ".zip"):
             sim_scores_to_store = load_pickled_object(decompress_file(stored_sim_scores + ".pickle" + ".zip"))
+            print("loaded sim scores")
             for query_id in list(queries.keys()):
                 current_candidate_ids = candidates[query_id]
                 current_sim_scores = sim_scores_to_store[query_id]
@@ -423,21 +412,15 @@ def run():
                     compress_file(stored_entities_targets + ".pickle")
                     os.remove(stored_entities_targets + ".pickle")
             for query_id in list(queries.keys()):
+                current_candidate_ids = candidates[query_id]
                 query_entities = set(entities_queries[query_id])
                 sim_scores = np.zeros(len(list(candidate_targets.keys())))
                 if query_entities:
-                    for idx, target_id in enumerate(list(candidate_targets.keys())):
+                    for idx, target_id in enumerate(current_candidate_ids):
                         target_entities = set(entities_candidate_targets[target_id])
                         len_intersection = len(query_entities.intersection(target_entities))
                         sim_scores[idx] = len_intersection
-                else:
-                    sim_scores[idx] = 0
-                current_candidate_ids = candidates[query_id]
-                current_sim_scores = sim_scores
-                sim_scores_dict = dict(zip(current_candidate_ids, current_sim_scores))
-                n_targets = len(current_candidate_ids)
-                c_list = [sim_scores_dict[target_id] for target_id in current_candidate_ids]
-                current_candidate_sim_scores = np.array(c_list).reshape(n_targets, )
+                current_candidate_sim_scores = sim_scores
                 all_sim_scores[query_id].append(current_candidate_sim_scores)
                 sim_scores_to_store[query_id] = current_candidate_sim_scores
             if args.ranking_only:

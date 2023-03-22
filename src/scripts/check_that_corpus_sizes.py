@@ -8,12 +8,13 @@ def run():
 
     data_name_queries = 'clef_2020_checkthat_2_english'
 
-    # create different corpora
-    subprocess.call(["python", "../../src/get_data/draw_sample.py"])
+    # # create different corpora
+    # subprocess.call(["python", "../../src/get_data/draw_sample.py"])
     corpus_sizes = ['1k', '5k', '10k']
     for corpus_size in corpus_sizes:
 
-        data_name_corpus = "clef_2020_checkthat_2_english/corpus_" + corpus_size + "_sample.tsv"
+        data_name_corpus = "../../"+corpus_size+"_sample.tsv"
+        #data_name_corpus = "clef_2020_checkthat_2_english/corpus_" + corpus_size + "_sample.tsv"
         data_name = "check_that"+corpus_size
 
         caching_path = "../../data/cache/corpus_size_targets_"+data_name

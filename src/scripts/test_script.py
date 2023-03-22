@@ -15,7 +15,7 @@ def run():
                      data_name,
                      "braycurtis",
                      "50",
-                     '-sentence_embedding_models',  "all-mpnet-base-v2"
+                     '-sentence_embedding_models', "all-mpnet-base-v2"
                      ])
 
     subprocess.call(["python",

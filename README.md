@@ -45,6 +45,198 @@ only "all-mpnet-base-v2" as retrieval
 | 2022 2a English  | 0.9139 |   0.9290 |   0.9312 | 
 | 2022 2b English  | 0.4769 |   0.5308 |   0.5346 |
 
+### "princeton-nlp/sup-simcse-roberta-large" stopped working
+
+2021 2a
+
+ '-sentence_embedding_models', "princeton-nlp/sup-simcse-roberta-large", 
+ '-lexical_similarity_measures', "similar_words_ratio",
+
+0.0347    0.0470    0.0515
+
+-------
+
+2021 2a
+
+'-sentence_embedding_models', "all-mpnet-base-v2", "sentence-transformers/sentence-t5-base", "princeton-nlp/sup-simcse-roberta-large",
+'-lexical_similarity_measures', "similar_words_ratio"
+
+0.0347    0.0470    0.0515
+
+--------
+
+replace it with unsup
+
+'-sentence_embedding_models', "all-mpnet-base-v2", "sentence-transformers/sentence-t5-base", "princeton-nlp/unsup-simcse-roberta-base",
+'-lexical_similarity_measures', "similar_words_ratio"
+
+0.8762    0.9059    0.9106
+
+----
+
+replace it with BERT
+
+'-sentence_embedding_models', "all-mpnet-base-v2", "sentence-transformers/sentence-t5-base", "princeton-nlp/sup-simcse-bert-base-uncased",
+'-lexical_similarity_measures', "similar_words_ratio"
+
+0.8515    0.8952    0.8977
+
+----
+
+don't use it
+
+'-sentence_embedding_models', "all-mpnet-base-v2", "sentence-transformers/sentence-t5-base",
+ '-lexical_similarity_measures', "similar_words_ratio"
+
+0.8020    0.8523    0.8602
+
+------
+## Vclaim vs Title + Vclaim
+
+'-sentence_embedding_models', "all-mpnet-base-v2", "sentence-transformers/sentence-t5-base", "princeton-nlp/unsup-simcse-roberta-base",
+'-lexical_similarity_measures', "similar_words_ratio"
+
+### Vclaim
+
+| Datast  | Map@1 | Map@3 | Map@5 |  
+|---|---|---|---|
+| 2020 2a English  | 0.9275    0.9467    0.9489
+|                  | 0.9375    0.9525    0.9525
+0.9275    0.9467    0.9492
+| 2021 2a English  | 0.8663    0.9043    0.9100 
+|                  | 0.8564    0.9010    0.9035
+0.9010    0.9216    0.9241
+| 2021 2b English  | 0.3228    0.3850    0.3939
+|                  | 0.3544    0.3935    0.4074
+0.3165    0.3819    0.3907
+| 2022 2a English  | 0.8804    0.8995    0.9014 
+|                  | 0.8947    0.9075    0.9108
+0.8804    0.9051    0.9075
+| 2022 2b English  | 0.4231    0.4808    0.4962
+|                  | 0.3846    0.4397    0.4621
+0.3846    0.4462    0.4654
+
+-----
+only allmpnet and st5
+
+| Datast  | Map@1 | Map@3 | Map@5 |  
+|---|---|---|---|
+| 2020 2a English  | 0.8875    0.9267    0.9292
+0.9175    0.9417    0.9442
+| 2021 2a English  | 0.8267    0.8729    0.8774  
+0.8267    0.8713    0.8782
+| 2021 2b English  | 0.2405    0.2827    0.3023
+| 2022 2a English  | 0.8325    0.8668    0.8721 
+| 2022 2b English  | 0.3077    0.3397    0.3644
+
+----
+
+0.9425    0.9600    0.9600
+0.8515    0.9010    0.9022
+
+----
+
+0.9425    0.9600    0.9600
+0.8515    0.9010    0.9022 
+
+--- 
+only allmpnet
+0.8925    0.9208    0.9218
+0.8465    0.8795    0.8860
+----
+0.8925    0.9208    0.9218
+0.8465    0.8795    0.8860
+
+---
+only T5
+
+0.9325    0.9458    0.9458
+0.7525    0.8152    0.8246
+
+0.9325    0.9458    0.9458
+0.7525    0.8152    0.8246
+
+--- only similar words ratio
+
+0.0200    0.0417    0.0497 
+0.0297    0.0380    0.0439
+0.0250    0.0342    0.0412 
+
+0.0200    0.0496    0.0556
+0.0198    0.0487    0.0658
+0.0198    0.0297    0.0364
+
+-- only similar words ratio lengtgh
+
+0.0200    0.0350    0.0472 
+0.0198    0.0347    0.0438
+
+0.0200    0.0350    0.0407
+0.0149    0.0338    0.0440
+
+0.0250    0.0525    0.0685
+0.0099    0.0297    0.0386
+
+-- only ne
+
+0.0198    0.0371    0.0463
+0.0198    0.0347    0.0446
+
+----
+
+lexical already in retrieval:
+0.4300    0.4783    0.4973
+0.5495    0.5949    0.6058
+----
+0.4300    0.4783    0.4943 
+0.5495    0.5949    0.6058
+
+---
+retrieval:
+all-mpnet-base-v2
+loaded sim scores
+similar_words_ratio
+queries loaded
+targets loaded
+
+re ranking
+similar_words_ratio
+loaded sim scores
+
+0.4300    0.4783    0.4963
+
+---
+
+retrieval:
+all-mpnet-base-v2
+loaded sim scores
+similar_words_ratio
+loaded sim scores
+
+re ranking
+similar_words_ratio
+loaded sim scores
+
+0.4300    0.4783    0.4963 im Reranking
+0.4300    0.4783    0.4943
+
+--> fehler 
+
+--> Fehler auch beim Embedden der Kandidaten, nur simscores löschen beim  
+0.4300    0.4783    0.4963
+0.0350    0.0454    0.0539
+
+0.0300    0.0533    0.0628
+--> sehr wahrscheinlich Fehler bi den SimScores
+
+## 
+
+retrieval allmpnet, reranking allmpnet + lexical
+
+retrieval allmpnet, lexical, reranking allmpnet + lexical 
+
+retrieval appmpnet, reranking ne
+
 
 ## Arcitecture
 

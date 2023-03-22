@@ -58,7 +58,6 @@ def run():
         caching_directory_targets = DATA_PATH + "cache/corpus_size_targets_"+args.data
     else:
         caching_directory_targets = caching_directory
-    print(caching_directory_targets)
     Path(caching_directory).mkdir(parents=True, exist_ok=True)
     Path(caching_directory_targets).mkdir(parents=True, exist_ok=True)
     queries = get_queries(args.queries)
@@ -114,6 +113,7 @@ def run():
         stored_sim_scores = caching_directory + "/sim_scores_" + model_name
         if os.path.exists(stored_sim_scores + ".pickle" + ".zip"):
             sim_scores_to_store = load_pickled_object(decompress_file(stored_sim_scores+".pickle"+".zip"))
+            print("loaded sim scores")
             for query_id in list(queries.keys()):
                 all_sim_scores[query_id].append(sim_scores_to_store[query_id])
         else:
@@ -165,6 +165,7 @@ def run():
         stored_sim_scores = caching_directory + "/sim_scores_" + ref_feature
         if os.path.exists(stored_sim_scores + ".pickle" + ".zip"):
             sim_scores_to_store = load_pickled_object(decompress_file(stored_sim_scores+".pickle"+".zip"))
+            print("loaded sim scores")
             for query_id in list(queries.keys()):
                 all_sim_scores[query_id].append(sim_scores_to_store[query_id])
         else:
@@ -219,6 +220,7 @@ def run():
         stored_sim_scores = caching_directory + "/sim_scores_" + lex_feature
         if os.path.exists(stored_sim_scores + ".pickle" + ".zip"):
             sim_scores_to_store = load_pickled_object(decompress_file(stored_sim_scores+".pickle"+".zip"))
+            print("loaded sim scores")
             for query_id in list(queries.keys()):
                 all_sim_scores[query_id].append(sim_scores_to_store[query_id])
         else:
@@ -272,6 +274,7 @@ def run():
         sim_scores_to_store = {}
         if os.path.exists(stored_sim_scores + ".pickle" + ".zip"):
             sim_scores_to_store = load_pickled_object(decompress_file(stored_sim_scores+".pickle"+".zip"))
+            print("loaded sim scores")
             for query_id in list(queries.keys()):
                 all_sim_scores[query_id].append(sim_scores_to_store[query_id])
         else:
@@ -300,6 +303,7 @@ def run():
         stored_sim_scores = caching_directory + "/sim_scores_" + discrete_feature + "_discrete"
         if os.path.exists(stored_sim_scores + ".pickle" + ".zip"):
             sim_scores_to_store = load_pickled_object(decompress_file(stored_sim_scores+".pickle"+".zip"))
+            print("loaded sim scores")
             for query_id in list(queries.keys()):
                 all_sim_scores[query_id].append(sim_scores_to_store[query_id])
         else:
