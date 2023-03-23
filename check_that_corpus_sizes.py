@@ -13,9 +13,13 @@ def run():
     corpus_sizes = ['1k', '5k', '10k']
     for corpus_size in corpus_sizes:
 
-        #data_name_corpus = "../../"+corpus_size+"_sample.tsv"
+        data_name = "check_that" + corpus_size
+        # delete old cache
+        caching_path_old_cache = "data/cache/" + data_name
+        if os.path.exists(caching_path_old_cache):
+            shutil.rmtree(caching_path_old_cache, ignore_errors=False, onerror=None)
+
         data_name_corpus = "clef_2020_checkthat_2_english/corpus_" + corpus_size + "_sample.tsv"
-        data_name = "check_that"+corpus_size
 
         caching_path = "data/cache/corpus_size_targets_"+data_name
         if os.path.exists(caching_path):
