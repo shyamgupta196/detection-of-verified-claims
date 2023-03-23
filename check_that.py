@@ -1,3 +1,4 @@
+import os
 import shutil
 import subprocess
 from pathlib import Path
@@ -5,44 +6,39 @@ from pathlib import Path
 
 def run():
 
-    data_names = ['clef_2020_checkthat_2_english', 'clef_2021_checkthat_2a_english', 'clef_2021_checkthat_2b_english', 'clef_2022_checkthat_2a_english', 'clef_2022_checkthat_2b_english']
-
+    # Data names for SimBa as independent repo
+    # # data_names = ['clef_2020_checkthat_2_english', 'clef_2021_checkthat_2a_english', 'clef_2021_checkthat_2b_english', 'clef_2022_checkthat_2a_english', 'clef_2022_checkthat_2b_english']
+    # Data names for SimBa as submodule
+    data_names = ['2020-2a', '2021-2a', '2021-2b', '2022-2a', '2022-2b']
+    base_path = "../"
     for data_name in data_names:
 
-        # data_name_queries =
-        # data_name_targets = "../../2021-2a-vclaims.tsv"
-        # data_name_targets = "../../2021-2a-vclaims.tsv"
-        # data_name_targets = "../../2021-2b-vclaims.tsv"
-        # data_name_targets = "../../2022-2a-vclaims.tsv"
-        # data_name_targets = "../../2022-2b-vclaims.tsv"
+        # data name queries for SimBa as independent repo
+        #  # data_name_queries =  "data/"+data_name+"/queries.tsv",
+        # Data name queries for SimBa as submodule
+        if data_name == '2020-2a':
+            data_name_queries = os.path.join(base_path, "claimlinking_riet/claimlinking_clef2020-factchecking-task2/test-input/tweets.queries.tsv")
+        elif data_name == '2021-2a':
+            data_name_queries = os.path.join(base_path, "claimlinking_riet/claimlinking_clef2021-checkthat-lab/task2/test-gold/subtask-2a--english/tweets.queries.tsv")
+        elif data_name == '2021-2b':
+            data_name_queries = os.path.join(base_path, "claimlinking_riet/claimlinking_clef2021-checkthat-lab/task2/test-gold/subtask-2b--english/queries.tsv")
+        elif data_name == '2022-2a':
+            data_name_queries = os.path.join(base_path, "claimlinking_riet/claimlinking_clef2022-checkthat-lab/task2/data/subtask-2a--english/test/CT2022-Task2A-EN-Test_Queries_gold.tsv")
+        elif data_name == '2022-2b':
+            data_name_queries = os.path.join(base_path, "claimlinking_riet/claimlinking_clef2022-checkthat-lab/task2/data/subtask-2b--english/test/CT2022-Task2B-EN-Test_Queries_gold.tsv")
 
-        # gold_qrels = {"2020a": os.path.join(base_path,
-        #                                     "claimlinking_riet/claimlinking_clef2020-factchecking-task2/test-input/tweet-vclaim-pairs.qrels"),
-        #               "2021a": os.path.join(base_path,
-        #                                     "claimlinking_riet/claimlinking_clef2021-checkthat-lab/task2/test-gold/subtask-2a--english/qrels-test.tsv"),
-        #               "2021b": os.path.join(base_path,
-        #                                     "claimlinking_riet/claimlinking_clef2021-checkthat-lab/task2/test-gold/subtask-2b--english/task2b-test.tsv"),
-        #               "2022a": os.path.join(base_path,
-        #                                     "claimlinking_riet/claimlinking_clef2022-checkthat-lab/task2/data/subtask-2a--english/test/CT2022-Task2A-EN-Test_Qrels_gold.tsv"),
-        #               "2022b": os.path.join(base_path,
-        #                                     "claimlinking_riet/claimlinking_clef2022-checkthat-lab/task2/data/subtask-2b--english/test/CT2022-Task2B-EN-Test_Qrels_gold.tsv")}
-
-        # gold_qrels = {"2020a": os.path.join(base_path,
-        #                                     "claimlinking_riet/claimlinking_clef2020-factchecking-task2/test-input/tweets.queries.tsv"),
-        #               "2021a": os.path.join(base_path,
-        #                                     "claimlinking_riet/claimlinking_clef2021-checkthat-lab/task2/test-gold/subtask-2a--english/tweets.queries.tsv"),
-        #               "2021b": os.path.join(base_path,
-        #                                     "claimlinking_riet/claimlinking_clef2021-checkthat-lab/task2/test-gold/subtask-2b--english/queries.tsv"),
-        #               "2022a": os.path.join(base_path,
-        #                                     "claimlinking_riet/claimlinking_clef2022-checkthat-lab/task2/data/subtask-2a--english/test/CT2022-Task2A-EN-Test_Queries_gold.tsv"),
-        #               "2022b": os.path.join(base_path,
-        #                                     "claimlinking_riet/claimlinking_clef2022-checkthat-lab/task2/data/subtask-2b--english/test/CT2022-Task2B-EN-Test_Queries_gold.tsv")}
-
+        # data name targets for SimBa as independent repo
+        #  # data_name_targets =  "data/" + data_name + "/corpus",
+        # Data name targets for SimBa as submodule
+        if data_name == '2020-2a':
+            data_name_targets = base_path + "claimlinking_riet/claimlinking_clef2020-factchecking-task2/data/v3.0/verified_claims.docs.tsv"
+        else:
+            data_name_targets = base_path + data_name + "-vclaims.tsv"
 
         subprocess.call(["python",
                          "src/candidate_retrieval/retrieval.py",
-                         "data/"+data_name+"/queries.tsv",
-                         "data/"+data_name+"/corpus",
+                         data_name_queries,
+                         data_name_targets,
                          data_name,
                          data_name,
                          "braycurtis",
@@ -56,8 +52,8 @@ def run():
 
         subprocess.call(["python",
                          "src/re_ranking/re_ranking.py",
-                         "data/"+data_name+"/queries.tsv",
-                         "data/"+data_name+"/corpus",
+                         data_name_queries,
+                         data_name_targets,
                          data_name,
                          data_name,
                          "braycurtis",
@@ -66,9 +62,24 @@ def run():
                          '-lexical_similarity_measures', "similar_words_ratio"
                          ])
 
+        # data name gold for SimBa as independent repo
+        #  # data_name_gold =  "data/"+data_name+"/gold.tsv"
+        # Data name gold for SimBa as submodule
+
+        if data_name == '2020-2a':
+            data_name_gold = os.path.join(base_path, "claimlinking_riet/claimlinking_clef2020-factchecking-task2/test-input/tweet-vclaim-pairs.qrels")
+        elif data_name == '2021-2a':
+            data_name_gold = os.path.join(base_path, "claimlinking_riet/claimlinking_clef2021-checkthat-lab/task2/test-gold/subtask-2a--english/qrels-test.tsv")
+        elif data_name == '2021-2b':
+            data_name_gold = os.path.join(base_path, "claimlinking_riet/claimlinking_clef2021-checkthat-lab/task2/test-gold/subtask-2b--english/task2b-test.tsv")
+        elif data_name == '2022-2a':
+            data_name_gold = os.path.join(base_path, "claimlinking_riet/claimlinking_clef2022-checkthat-lab/task2/data/subtask-2a--english/test/CT2022-Task2A-EN-Test_Qrels_gold.tsv")
+        elif data_name == '2022-2b':
+            data_name_gold = os.path.join(base_path, "claimlinking_riet/claimlinking_clef2022-checkthat-lab/task2/data/subtask-2b--english/test/CT2022-Task2B-EN-Test_Qrels_gold.tsv")
+
         print("Evaluation Scores for dataset "+ data_name)
         subprocess.call(["python", "evaluation/scorer/main.py",
-                         "data/"+data_name+"/gold.tsv",
+                         data_name_gold,
                          "data/" + data_name + "/pred_qrels.tsv"]),
 
         Path("run0").mkdir(parents=True, exist_ok=True)

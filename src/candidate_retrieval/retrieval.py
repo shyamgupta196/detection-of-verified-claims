@@ -5,16 +5,24 @@ import pandas as pd
 import torch
 from tensorflow.python.framework.ops import EagerTensor
 
-from src.create_similarity_features.lexical_similarity import get_lexical_entities
-from src.create_similarity_features.referential_similarity import get_sequence_entities
-from src.create_similarity_features.sentence_encoder import encode_queries, encode_targets
-from src.candidate_retrieval import DATA_PATH
-from src.create_similarity_features.string_similarity import get_string_similarity
-from src.utils import load_pickled_object, decompress_file, get_queries, get_targets, pickle_object, compress_file, \
-    get_number_of_tokens, make_top_k_dictionary
 from scipy.spatial.distance import cdist
 from pathlib import Path
 
+from claimlinking_simba.src.candidate_retrieval import DATA_PATH
+from claimlinking_simba.src.create_similarity_features.lexical_similarity import get_lexical_entities
+from claimlinking_simba.src.create_similarity_features.referential_similarity import get_sequence_entities
+from claimlinking_simba.src.create_similarity_features.sentence_encoder import encode_queries, encode_targets
+from claimlinking_simba.src.create_similarity_features.string_similarity import get_string_similarity
+from claimlinking_simba.src.utils import get_queries, get_targets, load_pickled_object, decompress_file, pickle_object, \
+    compress_file, make_top_k_dictionary
+
+# from src.create_similarity_features.lexical_similarity import get_lexical_entities
+# from src.create_similarity_features.referential_similarity import get_sequence_entities
+# from src.create_similarity_features.sentence_encoder import encode_queries, encode_targets
+# from src.candidate_retrieval import DATA_PATH
+# from src.create_similarity_features.string_similarity import get_string_similarity
+# from src.utils import load_pickled_object, decompress_file, get_queries, get_targets, pickle_object, compress_file, \
+#     make_top_k_dictionary
 
 
 def run():

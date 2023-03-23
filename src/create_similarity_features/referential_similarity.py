@@ -3,7 +3,7 @@ from nerd import nerd_client
 from nltk import word_tokenize
 from nltk.corpus import wordnet as wn
 
-#nltk.download('wordnet')
+nltk.download('wordnet')
 import en_core_web_sm
 
 

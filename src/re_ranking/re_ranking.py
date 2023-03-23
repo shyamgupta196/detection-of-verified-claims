@@ -1,27 +1,38 @@
 import argparse
 import os
 import numpy as np
-import torch
+
 import tensorflow as tf
 import pandas as pd
 from sklearn import svm, naive_bayes, preprocessing
 from sklearn.feature_selection import VarianceThreshold, f_classif, SelectKBest
-from sklearn.linear_model import LogisticRegression
-from sklearn.preprocessing import StandardScaler
-from tensorflow.python.framework.ops import EagerTensor
-from tensorflow.python.ops.numpy_ops import np_config
 
-from src.create_similarity_features.lexical_similarity import get_lexical_entities
-from src.create_similarity_features.referential_similarity import get_sequence_entities
-from src.create_similarity_features.sentence_encoder import encode_queries, encode_targets
-from src.candidate_retrieval import DATA_PATH
-from src.create_similarity_features.string_similarity import get_string_similarity
-from src.learning.create_feature_set import create_feature_set, create_test_set
-from src.utils import load_pickled_object, decompress_file, get_queries, get_targets, pickle_object, compress_file, \
-    get_number_of_tokens, make_top_k_dictionary, get_candidate_targets, output_dict_to_pred_qrels, \
-    supervised_output_to_pred_qrels, all_targets_as_query_candidates
+from tensorflow.python.framework.ops import EagerTensor
+
 from scipy.spatial.distance import cdist
 from pathlib import Path
+
+from claimlinking_simba.src.create_similarity_features.lexical_similarity import get_lexical_entities
+from claimlinking_simba.src.create_similarity_features.referential_similarity import get_sequence_entities
+from claimlinking_simba.src.create_similarity_features.sentence_encoder import encode_queries, encode_targets
+from claimlinking_simba.src.create_similarity_features.string_similarity import get_string_similarity
+from claimlinking_simba.src.learning.create_feature_set import create_feature_set, create_test_set
+from claimlinking_simba.src.re_ranking import DATA_PATH
+from claimlinking_simba.src.utils import get_queries, get_targets, all_targets_as_query_candidates, load_pickled_object, \
+    decompress_file, get_candidate_targets, pickle_object, compress_file, supervised_output_to_pred_qrels, \
+    output_dict_to_pred_qrels
+
+# from src.create_similarity_features.lexical_similarity import get_lexical_entities
+# from src.create_similarity_features.referential_similarity import get_sequence_entities
+# from src.create_similarity_features.sentence_encoder import encode_queries, encode_targets
+# from src.create_similarity_features.string_similarity import get_string_similarity
+# from src.learning.create_feature_set import create_feature_set, create_test_set
+# from src.re_ranking import DATA_PATH
+# from src.utils import get_queries, get_targets, all_targets_as_query_candidates, load_pickled_object, \
+#     decompress_file, get_candidate_targets, pickle_object, compress_file, supervised_output_to_pred_qrels, \
+#     output_dict_to_pred_qrels
+
+
 
 #classifier = LogisticRegression()
 #classifier = svm.SVC(probability=True)
@@ -30,8 +41,6 @@ scaler = preprocessing.MinMaxScaler()
 #sel = VarianceThreshold(threshold=(.8 * (1 - .8)))
 sel = SelectKBest(f_classif, k=4)
 # scaler = StandardScaler()
-
-
 
 def run():
     """
@@ -478,8 +487,6 @@ def run():
                 targets_and_sim_scores = {x: targets_and_sim_scores[x] for x in list(targets_and_sim_scores)[:args.k]}
                 output[query_id] = targets_and_sim_scores
                 output_dict_to_pred_qrels(output, output_path)
-
-
 
 
 if __name__ == "__main__":
