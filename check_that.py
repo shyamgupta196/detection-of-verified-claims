@@ -19,13 +19,13 @@ def run():
         if data_name == '2020-2a':
             data_name_queries = os.path.join(base_path, "claimlinking_riet/claimlinking_clef2020-factchecking-task2/test-input/tweets.queries.tsv")
         elif data_name == '2021-2a':
-            data_name_queries = os.path.join(base_path, "claimlinking_riet/claimlinking_clef2021-checkthat-lab/task2/test-gold/subtask-2a--english/tweets.queries.tsv")
+            data_name_queries = os.path.join(base_path, "claimlinking_riet/claimlinking_clef2021-checkthat-lab/task2/test-gold/subtask-2a--english/tweets-test.tsv")
         elif data_name == '2021-2b':
             data_name_queries = os.path.join(base_path, "claimlinking_riet/claimlinking_clef2021-checkthat-lab/task2/test-gold/subtask-2b--english/queries.tsv")
         elif data_name == '2022-2a':
-            data_name_queries = os.path.join(base_path, "claimlinking_riet/claimlinking_clef2022-checkthat-lab/task2/data/subtask-2a--english/test/CT2022-Task2A-EN-Test_Queries_gold.tsv")
+            data_name_queries = os.path.join(base_path, "claimlinking_riet/claimlinking_clef2022-checkthat-lab/task2/data/subtask-2a--english/test/CT2022-Task2A-EN-Test_Queries.tsv")
         elif data_name == '2022-2b':
-            data_name_queries = os.path.join(base_path, "claimlinking_riet/claimlinking_clef2022-checkthat-lab/task2/data/subtask-2b--english/test/CT2022-Task2B-EN-Test_Queries_gold.tsv")
+            data_name_queries = os.path.join(base_path, "claimlinking_riet/claimlinking_clef2022-checkthat-lab/task2/data/subtask-2b--english/test/CT2022-Task2B-EN-Test_Queries.tsv")
 
         # data name targets for SimBa as independent repo
         #  # data_name_targets =  "data/" + data_name + "/corpus",
@@ -45,7 +45,6 @@ def run():
                          "50",
                          '-sentence_embedding_models', "all-mpnet-base-v2"
                          ])
-
 
 
         subprocess.call(["python",

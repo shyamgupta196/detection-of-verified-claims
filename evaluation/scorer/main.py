@@ -8,9 +8,8 @@ from os.path import join, dirname, abspath
 
 import sys
 
-from evaluation.format_checker.main import check_format
-from evaluation.scorer import DATA_PATH
-from evaluation.scorer.utils import print_single_metric, print_thresholded_metric
+from claimlinking_simba.evaluation.format_checker.main import check_format
+from claimlinking_simba.evaluation.scorer.utils import print_single_metric, print_thresholded_metric
 
 sys.path.append('.')
 """
