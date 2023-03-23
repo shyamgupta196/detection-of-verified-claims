@@ -65,7 +65,8 @@ def get_targets(corpus_of_targets_filename):
         corpus_of_targets_filename == "../../2022-2a-vclaims.tsv" or \
         corpus_of_targets_filename == "../../2022-2b-vclaims.tsv":
             df = pd.read_csv(corpus_of_targets_filename, sep='\t', dtype=str, header=None)
-            df = df.iloc[:, :-1]
+            ##TESTED THIS
+            #df = df.iloc[:, :-1]
             column_length = len(df.columns)
             column_values = list(map(' '.join, df.iloc[:, 1:column_length].astype(str).values.tolist()))
             targets = dict(zip(df.iloc[:, 0], column_values))

@@ -5,7 +5,7 @@ from pathlib import Path
 
 def run():
 
-    data_names = ['clef_2020_checkthat_2_english']#, 'clef_2021_checkthat_2a_english']#, 'clef_2021_checkthat_2b_english', 'clef_2022_checkthat_2a_english', 'clef_2022_checkthat_2b_english']
+    data_names = ['clef_2020_checkthat_2_english', 'clef_2021_checkthat_2a_english', 'clef_2021_checkthat_2b_english', 'clef_2022_checkthat_2a_english', 'clef_2022_checkthat_2b_english']
 
     for data_name in data_names:
 
@@ -62,15 +62,14 @@ def run():
                          data_name,
                          "braycurtis",
                          "5",
-                         '-sentence_embedding_models', "all-mpnet-base-v2", #"sentence-transformers/sentence-t5-base",
+                         '-sentence_embedding_models', "all-mpnet-base-v2", "sentence-transformers/sentence-t5-base", "princeton-nlp/unsup-simcse-roberta-base",
                          '-lexical_similarity_measures', "similar_words_ratio"
-                         #'-referential_similarity_measures', "ne_similarity"
                          ])
 
         print("Evaluation Scores for dataset "+ data_name)
         subprocess.call(["python", "../../evaluation/scorer/main.py",
                          "../../data/"+data_name+"/gold.tsv",
-                         "../../data/" + data_name + "/pred_qrels.tsv"])
+                         "../../data/" + data_name + "/pred_qrels.tsv"]),
 
         Path("../../run0").mkdir(parents=True, exist_ok=True)
 

@@ -1,7 +1,109 @@
 
 # SimBa
 
+SimBa is an unsupervised IR-pipeline designed for STS tasks. 
+For Candidate Retrieval it makes use of sentence embedding models,
+for Re-Ranking additionally of simple lexical overlap between query and target.
+
+There are separate scripts available for getting CLEF CheckThat! claim matching datasets,
+for candidate retrieval, for re-ranking and for evaluation.
+
+The results presented here were created using the sentence encoders "all-mpnet-base-v2"
+to retrieve the k=50 closest candidate-targets for every input query according to braycurtis distance.
+For re-ranking we used "all-mpnet-base-v2", "princeton-nlp/sup-simcse-roberta-large",
+"sentence-transformers/sentence-t5-base",
+"https://tfhub.dev/google/universal-sentence-encoder/4"] and the ratio of similar words as features.
+
+
+
 ## Results
+
+### Experiments
+
+using all text fields
+
+and
+
+sentence encoders:
+"all-mpnet-base-v2",\
+"princeton-nlp/unsup-simcse-roberta-base" and\
+"sentence-transformers/sentence-t5-base"
+
+
+| Datast  | Map@1 | Map@3 | Map@5 |  
+|---|---|---|---|
+| 2020 2a English  | 0.9475    0.9617    0.9629
+| 2021 2a English  | 0.9158    0.9389    0.9412      
+| 2021 2b English  | 0.4114    0.4388    0.4414 
+| 2022 2a English  | 0.9043    0.9258    0.9258 
+| 2022 2b English  | 0.4462    0.4744    0.4805
+
+sentence encoders:
+"all-mpnet-base-v2",\
+"princeton-nlp/unsup-simcse-roberta-base",
+"sentence-transformers/sentence-t5-base" and\
+"https://tfhub.dev/google/universal-sentence-encoder/4"] 
+
+
+| Datast  | Map@1 | Map@3 | Map@5 |  
+|---|---|---|---|
+| 2020 2a English  | 0.9425    0.9567    0.9592
+| 2021 2a English  | 0.9010    0.9299    0.9321    
+| 2021 2b English  | 0.3924    0.4188    0.4251 
+| 2022 2a English  | 0.9139    0.9306    0.9306 
+| 2022 2b English  | 0.4231    0.4551    0.4628
+
+-----
+using only vclaims
+
+and
+
+sentence encoders:
+"all-mpnet-base-v2",\
+"princeton-nlp/unsup-simcse-roberta-base" and\
+"sentence-transformers/sentence-t5-base"
+
+
+| Datast  | Map@1 | Map@3 | Map@5 |  
+|---|---|---|---|
+| 2020 2a English  | 0.9425    0.9542    0.9577
+| 2021 2a English  | 0.8861    0.9183    0.9215      
+| 2021 2b English  | 0.4114    0.4546    0.4572 
+| 2022 2a English  | 0.9091    0.9242    0.9266 
+| 2022 2b English  | 0.4846    0.5372    0.5403 
+
+sentence encoders:
+"all-mpnet-base-v2",\
+"princeton-nlp/unsup-simcse-roberta-base",
+"sentence-transformers/sentence-t5-base" and\
+"https://tfhub.dev/google/universal-sentence-encoder/4"] 
+
+
+| Datast  | Map@1 | Map@3 | Map@5 |  
+|---|---|---|---|
+| 2020 2a English  | 0.9325    0.9483    0.9516
+| 2021 2a English  | 0.8663    0.9059    0.9084    
+| 2021 2b English  | 0.4241    0.4652    0.4677 
+| 2022 2a English  | 0.9091    0.9219    0.9264 
+| 2022 2b English  | 0.4846    0.5423    0.5454
+
+
+
+
+
+
+#### Further Experiments
+
+
+
+
+'-sentence_embedding_models', "all-mpnet-base-v2", "sentence-transformers/sentence-t5-base", "princeton-nlp/unsup-simcse-roberta-base", "https://tfhub.dev/google/universal-sentence-encoder/4",
+'-lexical_similarity_measures', "similar_words_ratio"
+
+2020:
+
+----
+0.9325    0.9483    0.9516 
 
  '-sentence_embedding_models', "all-mpnet-base-v2", "princeton-nlp/sup-simcse-roberta-large", "sentence-transformers/sentence-t5-base", "https://tfhub.dev/google/universal-sentence-encoder/4",
  '-lexical_similarity_measures', "similar_words_ratio"
@@ -231,9 +333,20 @@ loaded sim scores
 
 ## 
 
-retrieval allmpnet, reranking allmpnet + lexical
+retrieval allmpnet, reranking allmpnet + lexical, nothing lexical stored
+
+0.8975    0.9267    0.9304
+0.8975    0.9267    0.9304
 
 retrieval allmpnet, lexical, reranking allmpnet + lexical 
+
+0.8975    0.9267    0.9309 
+0.8975    0.9267    0.9309
+
+retrieval allmpnet, reranking allmpnet + lexical stored
+
+0.8975    0.9267    0.9304
+0.8975    0.9267    0.9304
 
 retrieval appmpnet, reranking ne
 
