@@ -81,8 +81,9 @@ def run():
         # Check if output file was created correctly by evaluating with standard evaluation script
         # Don't measure exceution time for that
         clef2020_path = os.path.join(base_path, "../claimlinking_riet/claimlinking_clef2020-factchecking-task2/") 
-        clef2022_path = os.path.join(base_path, "../claimlinking_riet/claimlinking_clef2022-checkthat-lab/task2/") 
-        subprocess.call(["python", os.path.join(clef2022_path, "scorer/main.py"), "--pred-file-path", os.path.join(base_path, "pred_qrels.tsv"), "--gold-file-path", os.path.join(clef2020_path, "test-input/tweet-vclaim-pairs.qrels")], cwd=clef2022_path)
+        clef2022_path = os.path.join(base_path, "../claimlinking_riet/claimlinking_clef2022-checkthat-lab/task2/")
+        pred_file_path = base_path + "/data/"+data_name+"/pred_qrels.tsv"
+        subprocess.call(["python", os.path.join(clef2022_path, "scorer/main.py"), "--pred-file-path", pred_file_path, "--gold-file-path", os.path.join(clef2020_path, "test-input/tweet-vclaim-pairs.qrels")], cwd=clef2022_path)
     return times, offline_times
 
 
