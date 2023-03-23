@@ -6,14 +6,13 @@ from pathlib import Path
 import torch
 from scipy.spatial.distance import cdist
 
-from evaluation.utils import get_sim_score
-from src.create_similarity_features.lexical_similarity import get_lexical_entities
-from src.create_similarity_features.referential_similarity import get_sequence_entities
-from src.create_similarity_features.sentence_encoder import encode_queries, encode_targets
-from src.create_similarity_features.string_similarity import get_string_similarity
-from src.learning import DATA_PATH
-from src.utils import load_pickled_object, decompress_file, get_number_of_tokens, pickle_object, compress_file, \
-    get_queries, make_top_k_dictionary, get_correct_targets, get_candidate_targets
+from claimlinking_simba.src.create_similarity_features import DATA_PATH
+from claimlinking_simba.src.create_similarity_features.lexical_similarity import get_lexical_entities
+from claimlinking_simba.src.create_similarity_features.referential_similarity import get_sequence_entities
+from claimlinking_simba.src.create_similarity_features.sentence_encoder import encode_queries, encode_targets
+from claimlinking_simba.src.create_similarity_features.string_similarity import get_string_similarity
+from claimlinking_simba.src.utils import get_queries, get_correct_targets, decompress_file, load_pickled_object, \
+    get_number_of_tokens, pickle_object, compress_file, make_top_k_dictionary
 
 
 def create_feature_set(data, targets, similarity_measure, sentence_embedding_models, referential_similarity_measures, lexical_similarity_measures, string_similarity_measures):

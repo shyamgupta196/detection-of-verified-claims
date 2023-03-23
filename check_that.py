@@ -46,9 +46,7 @@ def run():
                          '-sentence_embedding_models', "all-mpnet-base-v2"
                          ])
 
-        subprocess.call(["python", "evaluation/scorer/recall_evaluator.py",
-                         data_name,
-                         "data/"+data_name+"/gold.tsv"])
+
 
         subprocess.call(["python",
                          "src/re_ranking/re_ranking.py",
@@ -80,20 +78,20 @@ def run():
         print("Evaluation Scores for dataset "+ data_name)
         subprocess.call(["python", "evaluation/scorer/main.py",
                          data_name_gold,
-                         "data/" + data_name + "/pred_qrels.tsv"]),
+                         "data/" + data_name + "/pred_qrels.tsv"])
 
         Path("run0").mkdir(parents=True, exist_ok=True)
 
         output_file = "data/" + data_name + "/pred_qrels.tsv"
-        if data_name == "clef_2020_checkthat_2_english":
+        if data_name == '2020-2a':
             new_file = "run0/2020.tsv"
-        if data_name == "clef_2021_checkthat_2a_english":
+        if data_name == '2021-2a':
             new_file = "run0/2021a.tsv"
-        if data_name == "clef_2021_checkthat_2b_english":
+        if data_name == '2021-2b':
             new_file = "run0/2021b.tsv"
-        if data_name == "clef_2022_checkthat_2a_english":
+        if data_name == '2022-2a':
             new_file = "run0/2022a.tsv"
-        if data_name == "clef_2022_checkthat_2b_english":
+        if data_name == '2022-2b':
             new_file = "run0/2022b.tsv"
 
         shutil.copy(output_file, new_file)

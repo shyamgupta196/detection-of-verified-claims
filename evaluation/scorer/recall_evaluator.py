@@ -8,10 +8,15 @@ from trectools import TrecRun, TrecQrel, TrecEval
 
 import sys
 
-from evaluation.format_checker.main import check_format
-from evaluation.scorer import DATA_PATH
-from evaluation.scorer.utils import print_single_metric
-from src.utils import load_pickled_object, decompress_file, candidates_dict_to_pred_qrels
+from claimlinking_simba.evaluation import DATA_PATH
+from claimlinking_simba.evaluation.format_checker.main import check_format
+from claimlinking_simba.evaluation.scorer.utils import print_single_metric
+from claimlinking_simba.src.utils import load_pickled_object, decompress_file, candidates_dict_to_pred_qrels
+
+# from evaluation.format_checker.main import check_format
+# from evaluation.scorer import DATA_PATH
+# from evaluation.scorer.utils import print_single_metric
+# from src.utils import load_pickled_object, decompress_file, candidates_dict_to_pred_qrels
 
 sys.path.append('.')
 """
