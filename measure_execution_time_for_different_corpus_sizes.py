@@ -13,21 +13,23 @@ def run():
         # get the verified claims embeddings
         data_name = "check_that" + size
         # delete old cache
-        caching_path_old_cache = "data/cache/" + data_name
+        caching_path_old_cache = base_path + "/data/cache/" + data_name
         if os.path.exists(caching_path_old_cache):
             shutil.rmtree(caching_path_old_cache, ignore_errors=False, onerror=None)
 
-        data_name_corpus = "clef_2020_checkthat_2_english/corpus_" + size + "_sample.tsv"
+        #data_name_corpus = "clef_2020_checkthat_2_english/corpus_" + size + "_sample.tsv"
+        data_name_corpus = base_path + "/../" + size + "_sample.tsv"
 
-        caching_path = "data/cache/corpus_size_targets_"+data_name
+        caching_path = base_path + "/data/cache/corpus_size_targets_"+data_name
         if os.path.exists(caching_path):
             shutil.rmtree(caching_path, ignore_errors=False, onerror=None)
 
+
         offline_start_time = time.time()
         subprocess.call(["python",
-                         "src/candidate_retrieval/retrieval.py",
+                         base_path + "/src/candidate_retrieval/retrieval.py",
                          queries_path,
-                         "data/" + data_name_corpus,
+                         data_name_corpus,
                          data_name,
                          data_name,
                          "braycurtis",
@@ -41,8 +43,8 @@ def run():
         offline_times.append(time.time() - offline_start_time)
 
         print("delete query embeddings and keep target embeddings")
-        caching_path = "data/cache/" + data_name
-        candidates_path = "data/" + data_name + "candidates.pickle.zip"
+        caching_path = base_path + "/data/cache/" + data_name
+        candidates_path = base_path + "/data/" + data_name + "candidates.pickle.zip"
         # targets are cached and loaded from specific directory (because keyword --corpus_sizes is given)
         # everything else is deleted from teh cache
         if os.path.exists(caching_path):
@@ -53,9 +55,9 @@ def run():
         print("Measuring time for %s" %dataset)
         start_time = time.time() # Measure time for retrieval and re-ranking
         subprocess.call(["python",
-                         "src/candidate_retrieval/retrieval.py",
+                         base_path + "/src/candidate_retrieval/retrieval.py",
                          queries_path,
-                         "data/"+data_name_corpus,
+                         data_name_corpus,
                          data_name,
                          data_name,
                          "braycurtis",
@@ -66,9 +68,9 @@ def run():
                          ])
 
         subprocess.call(["python",
-                         "src/re_ranking/re_ranking.py",
+                         base_path + "/src/re_ranking/re_ranking.py",
                          queries_path,
-                         "data/"+data_name_corpus,
+                         data_name_corpus,
                          data_name,
                          data_name,
                          "braycurtis",

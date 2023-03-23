@@ -11,6 +11,7 @@ def run():
     # Data names for SimBa as submodule
     data_names = ['2020-2a', '2021-2a', '2021-2b', '2022-2a', '2022-2b']
     base_path = "../"
+    directionary_path = os.path.dirname(__file__)
     for data_name in data_names:
 
         # data name queries for SimBa as independent repo
@@ -36,7 +37,7 @@ def run():
             data_name_targets = base_path + data_name + "-vclaims.tsv"
 
         subprocess.call(["python",
-                         "src/candidate_retrieval/retrieval.py",
+                         directionary_path + "/src/candidate_retrieval/retrieval.py",
                          data_name_queries,
                          data_name_targets,
                          data_name,
@@ -47,7 +48,7 @@ def run():
                          ])
 
         subprocess.call(["python",
-                         "src/re_ranking/re_ranking.py",
+                         directionary_path + "/src/re_ranking/re_ranking.py",
                          data_name_queries,
                          data_name_targets,
                          data_name,
@@ -74,7 +75,7 @@ def run():
             data_name_gold = os.path.join(base_path, "claimlinking_riet/claimlinking_clef2022-checkthat-lab/task2/data/subtask-2b--english/test/CT2022-Task2B-EN-Test_Qrels_gold.tsv")
 
         print("Evaluation Scores for dataset "+ data_name)
-        subprocess.call(["python", "evaluation/scorer/main.py",
+        subprocess.call(["python", directionary_path + "/evaluation/scorer/main.py",
                          data_name_gold,
                          "data/" + data_name + "/pred_qrels.tsv"])
 

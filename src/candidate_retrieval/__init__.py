@@ -6,5 +6,7 @@ dir_of_file = dirname(filepath)
 parent_dir_of_file = dirname(dir_of_file)
 parents_parent_dir_of_file = dirname(parent_dir_of_file)
 
+SRC_PATH = parents_parent_dir_of_file+"/scr/"
+
 
 DATA_PATH = parents_parent_dir_of_file+"/data/"
