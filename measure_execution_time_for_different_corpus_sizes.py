@@ -4,7 +4,7 @@ import subprocess
 import time
 def run():
 
-    base_path = os.path.dirname(__file__)
+    base_path = os.path.abspath(os.path.dirname(__file__))
     times = []
     offline_times = []
     for size in ["1k", "1k", "1k", "1k", "5k", "5k", "5k", "10k", "10k", "10k"]:
