@@ -10,23 +10,23 @@ from tensorflow.python.framework.ops import EagerTensor
 from scipy.spatial.distance import cdist
 from pathlib import Path
 
-from ...src.candidate_retrieval import DATA_PATH
-from ...src.create_similarity_features.lexical_similarity import get_lexical_entities
-from ...src.create_similarity_features.referential_similarity import get_sequence_entities
-from ...src.create_similarity_features.sentence_encoder import encode_queries, encode_targets
-from ...src.create_similarity_features.string_similarity import get_string_similarity
-from ...src.utils import get_queries, get_targets, load_pickled_object, decompress_file, pickle_object, \
+base_path = os.path.abspath(os.path.dirname(__file__))
+DATA_PATH = os.path.join(base_path, "../../data")
+sys.path.append(os.path.join(base_path, "../create_similarity_features"))
+sys.path.append(os.path.join(base_path, ".."))
+import re_ranking
+import lexical_similarity
+import referential_similarity
+import sentence_encoder
+import string_similarity
+import utils
+
+from utils import get_queries, get_targets, load_pickled_object, decompress_file, pickle_object, \
     compress_file, make_top_k_dictionary
-
-
-# from src.create_similarity_features.lexical_similarity import get_lexical_entities
-# from src.create_similarity_features.referential_similarity import get_sequence_entities
-# from src.create_similarity_features.sentence_encoder import encode_queries, encode_targets
-# from src.candidate_retrieval import DATA_PATH
-# from src.create_similarity_features.string_similarity import get_string_similarity
-# from src.utils import load_pickled_object, decompress_file, get_queries, get_targets, pickle_object, compress_file, \
-#     make_top_k_dictionary
-
+from sentence_encoder import encode_queries, encode_targets
+from referential_similarity import get_sequence_entities
+from string_similarity import get_string_similarity
+from lexical_similarity import get_lexical_entities
 
 def run():
     """

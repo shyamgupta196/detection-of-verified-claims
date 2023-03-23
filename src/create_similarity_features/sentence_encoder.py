@@ -1,18 +1,20 @@
+import os
+import sys
+
 from sentence_transformers import SentenceTransformer
 import logging
 import nltk
 import tensorflow_hub as hub
 import torch
 
-from ...src.create_similarity_features import SRC_PATH
-from ...src.create_similarity_features.infersent_encoder.infersent.models import InferSent
-
-# from src.create_similarity_features import SRC_PATH
-# from src.create_similarity_features.infersent_encoder.infersent.models import InferSent
+base_path = os.path.abspath(os.path.dirname(__file__))
+SRC_PATH = os.path.join(base_path, "../../src")
+sys.path.append(os.path.join(base_path, "../create_similarity_features/infersent_encoder/infersent"))
+sys.path.append(os.path.join(base_path, ".."))
+import models
+from models import InferSent
 
 logger = logging.getLogger(__name__)
-
-
 def encode_queries(query_dictionary, model_name):
     batch_size = 128
     queries = list(query_dictionary.values())

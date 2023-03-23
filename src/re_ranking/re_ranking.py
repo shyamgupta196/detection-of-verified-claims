@@ -1,5 +1,7 @@
 import argparse
 import os
+import sys
+
 import numpy as np
 
 import tensorflow as tf
@@ -12,27 +14,28 @@ from tensorflow.python.framework.ops import EagerTensor
 from scipy.spatial.distance import cdist
 from pathlib import Path
 
-from ...src.create_similarity_features.lexical_similarity import get_lexical_entities
-from ...src.create_similarity_features.referential_similarity import get_sequence_entities
-from ...src.create_similarity_features.sentence_encoder import encode_queries, encode_targets
-from ...src.create_similarity_features.string_similarity import get_string_similarity
-from ...src.learning.create_feature_set import create_feature_set, create_test_set
-from ...src.re_ranking import DATA_PATH
-from ...src.utils import get_queries, get_targets, all_targets_as_query_candidates, load_pickled_object, \
+base_path = os.path.abspath(os.path.dirname(__file__))
+DATA_PATH = os.path.join(base_path, "../../data")
+sys.path.append(os.path.join(base_path, "../create_similarity_features"))
+sys.path.append(os.path.join(base_path, "../learning"))
+sys.path.append(os.path.join(base_path, ".."))
+import re_ranking
+import lexical_similarity
+import referential_similarity
+import sentence_encoder
+import string_similarity
+import utils
+import create_feature_set
+
+
+from utils import get_queries, get_targets, all_targets_as_query_candidates, load_pickled_object, \
     decompress_file, get_candidate_targets, pickle_object, compress_file, supervised_output_to_pred_qrels, \
     output_dict_to_pred_qrels
-
-# from src.create_similarity_features.lexical_similarity import get_lexical_entities
-# from src.create_similarity_features.referential_similarity import get_sequence_entities
-# from src.create_similarity_features.sentence_encoder import encode_queries, encode_targets
-# from src.create_similarity_features.string_similarity import get_string_similarity
-# from src.learning.create_feature_set import create_feature_set, create_test_set
-# from src.re_ranking import DATA_PATH
-# from src.utils import get_queries, get_targets, all_targets_as_query_candidates, load_pickled_object, \
-#     decompress_file, get_candidate_targets, pickle_object, compress_file, supervised_output_to_pred_qrels, \
-#     output_dict_to_pred_qrels
-
-
+from sentence_encoder import encode_queries, encode_targets
+from referential_similarity import get_sequence_entities
+from string_similarity import get_string_similarity
+from lexical_similarity import get_lexical_entities
+from create_feature_set import create_feature_set, create_test_set
 
 #classifier = LogisticRegression()
 #classifier = svm.SVC(probability=True)
