@@ -46,7 +46,6 @@ def run():
                          '-sentence_embedding_models', "all-mpnet-base-v2"
                          ])
 
-
         subprocess.call(["python",
                          "src/re_ranking/re_ranking.py",
                          data_name_queries,
