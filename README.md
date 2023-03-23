@@ -22,7 +22,7 @@ There an additional retrieval step caches only the target embeddings and time is
 
 | Datast  | Map@1 | Map@3     | Map@5 |  
 |---|---|-----------|---|
-| 2020 2a English  | 0.9475  | 0.9617    |  0.9629
+| 2020 2a English  | 0.9425  |  0.9617   | 0.9617
 | 2021 2a English  | 0.9158  | 0.9389    |  0.9412      
 | 2021 2b English  | 0.4114  | 0.4388    |  0.4414 
 | 2022 2a English  | 0.9043  | 0.9258    |  0.9258 
