@@ -40,9 +40,9 @@ def run():
 
 
         subprocess.call(["python",
-                         "../../src/candidate_retrieval/retrieval.py",
-                         "../../data/"+data_name+"/queries.tsv",
-                         "../../data/"+data_name+"/corpus",
+                         "src/candidate_retrieval/retrieval.py",
+                         "data/"+data_name+"/queries.tsv",
+                         "data/"+data_name+"/corpus",
                          data_name,
                          data_name,
                          "braycurtis",
@@ -50,14 +50,14 @@ def run():
                          '-sentence_embedding_models', "all-mpnet-base-v2"
                          ])
 
-        subprocess.call(["python", "../../evaluation/scorer/recall_evaluator.py",
+        subprocess.call(["python", "evaluation/scorer/recall_evaluator.py",
                          data_name,
-                         "../../data/"+data_name+"/gold.tsv"])
+                         "data/"+data_name+"/gold.tsv"])
 
         subprocess.call(["python",
-                         "../../src/re_ranking/re_ranking.py",
-                         "../../data/"+data_name+"/queries.tsv",
-                         "../../data/"+data_name+"/corpus",
+                         "src/re_ranking/re_ranking.py",
+                         "data/"+data_name+"/queries.tsv",
+                         "data/"+data_name+"/corpus",
                          data_name,
                          data_name,
                          "braycurtis",
@@ -67,23 +67,23 @@ def run():
                          ])
 
         print("Evaluation Scores for dataset "+ data_name)
-        subprocess.call(["python", "../../evaluation/scorer/main.py",
-                         "../../data/"+data_name+"/gold.tsv",
-                         "../../data/" + data_name + "/pred_qrels.tsv"]),
+        subprocess.call(["python", "evaluation/scorer/main.py",
+                         "data/"+data_name+"/gold.tsv",
+                         "data/" + data_name + "/pred_qrels.tsv"]),
 
-        Path("../../run0").mkdir(parents=True, exist_ok=True)
+        Path("run0").mkdir(parents=True, exist_ok=True)
 
-        output_file = "../../data/" + data_name + "/pred_qrels.tsv"
+        output_file = "data/" + data_name + "/pred_qrels.tsv"
         if data_name == "clef_2020_checkthat_2_english":
-            new_file = "../../run0/2020.tsv"
+            new_file = "run0/2020.tsv"
         if data_name == "clef_2021_checkthat_2a_english":
-            new_file = "../../run0/2021a.tsv"
+            new_file = "run0/2021a.tsv"
         if data_name == "clef_2021_checkthat_2b_english":
-            new_file = "../../run0/2021b.tsv"
+            new_file = "run0/2021b.tsv"
         if data_name == "clef_2022_checkthat_2a_english":
-            new_file = "../../run0/2022a.tsv"
+            new_file = "run0/2022a.tsv"
         if data_name == "clef_2022_checkthat_2b_english":
-            new_file = "../../run0/2022b.tsv"
+            new_file = "run0/2022b.tsv"
 
         shutil.copy(output_file, new_file)
 

@@ -10,13 +10,23 @@ for candidate retrieval, for re-ranking and for evaluation.
 
 The results presented here were created using the sentence encoders "all-mpnet-base-v2"
 to retrieve the k=50 closest candidate-targets for every input query according to braycurtis distance.
-For re-ranking we used "all-mpnet-base-v2", "princeton-nlp/sup-simcse-roberta-large",
-"sentence-transformers/sentence-t5-base",
-"https://tfhub.dev/google/universal-sentence-encoder/4"] and the ratio of similar words as features.
+For re-ranking we used "all-mpnet-base-v2", "princeton-nlp/unsup-simcse-roberta-base" and\
+"sentence-transformers/sentence-t5-base" and the ratio of similar words ("similar_words_ratio) as features.
 
-
+For the queries the whole input claims were used, for the targets the fields "vclaim" and "title" of the vclaims.
+The results for all checkthat labs can be reproduced using the script "check_that". The output files will be stored in the folder "run0".
+Execution times for claimlinking can be tested using teh script "check_that_corpus_sizes".
+There an additional retrieval step caches only the target embeddings and time is measured for embedding queries and computing similarity scores.
 
 ## Results
+
+| Datast  | Map@1 | Map@3     | Map@5 |  
+|---|---|-----------|---|
+| 2020 2a English  | 0.9475  | 0.9617    |  0.9629
+| 2021 2a English  | 0.9158  | 0.9389    |  0.9412      
+| 2021 2b English  | 0.4114  | 0.4388    |  0.4414 
+| 2022 2a English  | 0.9043  | 0.9258    |  0.9258 
+| 2022 2b English  | 0.4462  | 0.4744    |  0.4805
 
 ### Experiments
 
@@ -30,13 +40,13 @@ sentence encoders:
 "sentence-transformers/sentence-t5-base"
 
 
-| Datast  | Map@1 | Map@3 | Map@5 |  
-|---|---|---|---|
-| 2020 2a English  | 0.9475    0.9617    0.9629
-| 2021 2a English  | 0.9158    0.9389    0.9412      
-| 2021 2b English  | 0.4114    0.4388    0.4414 
-| 2022 2a English  | 0.9043    0.9258    0.9258 
-| 2022 2b English  | 0.4462    0.4744    0.4805
+| Datast  | Map@1 | Map@3     | Map@5 |  
+|---|---|-----------|---|
+| 2020 2a English  | 0.9475  | 0.9617    |  0.9629
+| 2021 2a English  | 0.9158  | 0.9389    |  0.9412      
+| 2021 2b English  | 0.4114  | 0.4388    |  0.4414 
+| 2022 2a English  | 0.9043  | 0.9258    |  0.9258 
+| 2022 2b English  | 0.4462  | 0.4744    |  0.4805
 
 sentence encoders:
 "all-mpnet-base-v2",\
@@ -45,13 +55,13 @@ sentence encoders:
 "https://tfhub.dev/google/universal-sentence-encoder/4"] 
 
 
-| Datast  | Map@1 | Map@3 | Map@5 |  
-|---|---|---|---|
-| 2020 2a English  | 0.9425    0.9567    0.9592
-| 2021 2a English  | 0.9010    0.9299    0.9321    
-| 2021 2b English  | 0.3924    0.4188    0.4251 
-| 2022 2a English  | 0.9139    0.9306    0.9306 
-| 2022 2b English  | 0.4231    0.4551    0.4628
+| Datast  | Map@1     | Map@3 | Map@5 |  
+|---|-----------|---|---|
+| 2020 2a English  | 0.9425    |0.9567    |0.9592
+| 2021 2a English  | 0.9010    |0.9299    |0.9321    
+| 2021 2b English  | 0.3924    |0.4188    |0.4251 
+| 2022 2a English  | 0.9139    |0.9306    |0.9306 
+| 2022 2b English  | 0.4231    |0.4551    |0.4628
 
 -----
 using only vclaims
@@ -66,11 +76,11 @@ sentence encoders:
 
 | Datast  | Map@1 | Map@3 | Map@5 |  
 |---|---|---|---|
-| 2020 2a English  | 0.9425    0.9542    0.9577
-| 2021 2a English  | 0.8861    0.9183    0.9215      
-| 2021 2b English  | 0.4114    0.4546    0.4572 
-| 2022 2a English  | 0.9091    0.9242    0.9266 
-| 2022 2b English  | 0.4846    0.5372    0.5403 
+| 2020 2a English  | 0.9425    |0.9542    |0.9577
+| 2021 2a English  | 0.8861    |0.9183    |0.9215      
+| 2021 2b English  | 0.4114    |0.4546    |0.4572 
+| 2022 2a English  | 0.9091    |0.9242    |0.9266 
+| 2022 2b English  | 0.4846    |0.5372    |0.5403 
 
 sentence encoders:
 "all-mpnet-base-v2",\
@@ -81,16 +91,144 @@ sentence encoders:
 
 | Datast  | Map@1 | Map@3 | Map@5 |  
 |---|---|---|---|
-| 2020 2a English  | 0.9325    0.9483    0.9516
-| 2021 2a English  | 0.8663    0.9059    0.9084    
-| 2021 2b English  | 0.4241    0.4652    0.4677 
-| 2022 2a English  | 0.9091    0.9219    0.9264 
-| 2022 2b English  | 0.4846    0.5423    0.5454
+| 2020 2a English  | 0.9325    |0.9483    |0.9516
+| 2021 2a English  | 0.8663    |0.9059    |0.9084    
+| 2021 2b English  | 0.4241    |0.4652    |0.4677 
+| 2022 2a English  | 0.9091    |0.9219    |0.9264 
+| 2022 2b English  | 0.4846    |0.5423    |0.5454
 
+## Arcitecture
 
+1. Retrieval
+2. Re-Ranking
+3. Learning
 
+### Retrieval
 
+**input**:
+queries, targets
 
+**output**:
+{query: list of top k targets (ordered if union is not chosen)}
+
+**parameters**:
+- data name for storage
+- similarity measure for embeddings
+- k
+- *features*: sentence embeddings models, lexical similarity measures, referential similarity measures, string similarity measures, referntial similarity measures
+- How to combine the features: either take mean of different features or union of top k per feature
+
+**possibly cached**:
+- sentence embeddings queries and targets (df)
+- entities queries and targets (referential similarity) (df)
+- similarity scores for all used features (dictionary)
+
+#### Retrieval Architecture
+
+0. Get number of tokens of\
+    0.1 queries
+    0.2 targets
+    0.3 pairs
+
+1. For all sentence embedding models\
+   1.1 Embed all queries and cache\
+   1.2. Embed all targets and cache\
+   1.3. Calculate all similarity scores for all combinations -> value between 0 and 100 and cache
+   
+2. For all referential similarity measures\
+   2.1 get entities for all queries and cache\
+   2.2. get entities for all targets and cache\
+   2.3. Calculate all similarity scores for all combinations -> value between 0 and 100 and cache
+    
+3. For all lexical similarity measures\
+    3.1 get entities for all queries and cache or load from cache\
+    3.2. get entities for all targets and cache or load from cache\
+    3.3. Calculate all similarity scores for all combinations -> value between 0 and 100 and cache
+   
+4. For all string similarity measures\
+    4.1 Calculate all similarity scores for all combinations -> value between 0 and 100 and cache
+   
+5. get top k targets per query:\
+    5.1. create union of features and compute top k\
+    5.2. compute mean of features and compute top k   
+   
+### Re-Ranking
+
+**input**:
+{query: list of top k targets (ordered if union is not chosen)}, queries, targets
+
+**output**:
+qrels file with top k targets per query including similarity score
+
+**parameters**:
+- data name for storage
+- similarity measure for embeddings
+- k
+- *features*: sentence embeddings models, lexical similarity measures, referential similarity measures, string similarity measures, referntial similarity measures
+- How to combine the features:
+    - either take mean of different features or
+    - learn the similarity using the features
+    
+#### Re-Ranking Architecture
+
+0. If similarity should be learned:
+    Do Learning, then all target embeddings should be cached
+
+1. For all sentence embedding models\
+   1.1 Embed all queries and cache or load from cache\
+   1.2. Embed all *relevant targets* or load from cache\
+   1.3. Calculate all similarity scores for one query and its *candidate targets* or load from cache -> value between 0 and 100 and cache
+   
+2. For all referential similarity measures\
+   2.1 get entities for all queries and cache or load from cache\
+   2.2. get entities for all targets and cache or load from cache\
+   2.3. Calculate all similarity scores for one query and its *candidate targets* or load from cache -> value between 0 and 100 and cache
+   
+3. For all lexical similarity measures\
+    3.1. Calculate all similarity scores for one query and its *candidate targets* or load from cache -> value between 0 and 100 and cache
+   
+4. For all string similarity measures\
+    4.1 Calculate all similarity scores for one query and its *candidate targets* or load from cache -> value between 0 and 100 and cache
+   
+5. get top k targets per query:\
+    5.1. compute mean of features and compute top k  
+   5.2. predict relevance using trained model
+
+### Learning
+
+**problem**
+learn to rank using binary training data
+One approach: binary classification using classifiers certainty as similarity score
+
+**input**
+training queries, targets
+
+**output**
+model trained on input features
+
+**parameters**
+- data name for storage
+- similarity measure for embeddings
+- k for retrieval step 
+- *features*: sentence embeddings models, lexical similarity measures, referential similarity measures, string similarity measures, referntial similarity measures
+
+#### Learning Architecture
+
+0. Do Retrieval step for training queries with same features as Re-Ranking
+1. Create feature set with true pairs as targets, include query-target pairs that were not retrieved
+2. Train a binary classifier
+
+### Pre-Processing
+#### Queries
+**input**
+queries
+**output**
+pre-processed queries
+#### Targets
+**input**
+targets
+**output**
+pre-processed targets
 
 #### Further Experiments
 
@@ -350,139 +488,6 @@ retrieval allmpnet, reranking allmpnet + lexical stored
 
 retrieval appmpnet, reranking ne
 
-
-## Arcitecture
-
-1. Retrieval
-2. Re-Ranking
-3. Learning
-
-### Retrieval
-
-**input**:
-queries, targets
-
-**output**:
-{query: list of top k targets (ordered if union is not chosen)}
-
-**parameters**:
-- data name for storage
-- similarity measure for embeddings
-- k
-- *features*: sentence embeddings models, lexical similarity measures, referential similarity measures, string similarity measures, referntial similarity measures
-- How to combine the features: either take mean of different features or union of top k per feature
-
-**possibly cached**:
-- sentence embeddings queries and targets (df)
-- entities queries and targets (referential similarity) (df)
-- similarity scores for all used features (dictionary)
-
-#### Retrieval Architecture
-
-0. Get number of tokens of\
-    0.1 queries
-    0.2 targets
-    0.3 pairs
-
-1. For all sentence embedding models\
-   1.1 Embed all queries and cache\
-   1.2. Embed all targets and cache\
-   1.3. Calculate all similarity scores for all combinations -> value between 0 and 100 and cache
-   
-2. For all referential similarity measures\
-   2.1 get entities for all queries and cache\
-   2.2. get entities for all targets and cache\
-   2.3. Calculate all similarity scores for all combinations -> value between 0 and 100 and cache
-    
-3. For all lexical similarity measures\
-    3.1 get entities for all queries and cache or load from cache\
-    3.2. get entities for all targets and cache or load from cache\
-    3.3. Calculate all similarity scores for all combinations -> value between 0 and 100 and cache
-   
-4. For all string similarity measures\
-    4.1 Calculate all similarity scores for all combinations -> value between 0 and 100 and cache
-   
-5. get top k targets per query:\
-    5.1. create union of features and compute top k\
-    5.2. compute mean of features and compute top k   
-   
-### Re-Ranking
-
-**input**:
-{query: list of top k targets (ordered if union is not chosen)}, queries, targets
-
-**output**:
-qrels file with top k targets per query including similarity score
-
-**parameters**:
-- data name for storage
-- similarity measure for embeddings
-- k
-- *features*: sentence embeddings models, lexical similarity measures, referential similarity measures, string similarity measures, referntial similarity measures
-- How to combine the features:
-    - either take mean of different features or
-    - learn the similarity using the features
-    
-#### Re-Ranking Architecture
-
-0. If similarity should be learned:
-    Do Learning, then all target embeddings should be cached
-
-1. For all sentence embedding models\
-   1.1 Embed all queries and cache or load from cache\
-   1.2. Embed all *relevant targets* or load from cache\
-   1.3. Calculate all similarity scores for one query and its *candidate targets* or load from cache -> value between 0 and 100 and cache
-   
-2. For all referential similarity measures\
-   2.1 get entities for all queries and cache or load from cache\
-   2.2. get entities for all targets and cache or load from cache\
-   2.3. Calculate all similarity scores for one query and its *candidate targets* or load from cache -> value between 0 and 100 and cache
-   
-3. For all lexical similarity measures\
-    3.1. Calculate all similarity scores for one query and its *candidate targets* or load from cache -> value between 0 and 100 and cache
-   
-4. For all string similarity measures\
-    4.1 Calculate all similarity scores for one query and its *candidate targets* or load from cache -> value between 0 and 100 and cache
-   
-5. get top k targets per query:\
-    5.1. compute mean of features and compute top k  
-   5.2. predict relevance using trained model
-
-### Learning
-
-**problem**
-learn to rank using binary training data
-One approach: binary classification using classifiers certainty as similarity score
-
-**input**
-training queries, targets
-
-**output**
-model trained on input features
-
-**parameters**
-- data name for storage
-- similarity measure for embeddings
-- k for retrieval step 
-- *features*: sentence embeddings models, lexical similarity measures, referential similarity measures, string similarity measures, referntial similarity measures
-
-#### Learning Architecture
-
-0. Do Retrieval step for training queries with same features as Re-Ranking
-1. Create feature set with true pairs as targets, include query-target pairs that were not retrieved
-2. Train a binary classifier
-
-### Pre-Processing
-#### Queries
-**input**
-queries
-**output**
-pre-processed queries
-#### Targets
-**input**
-targets
-**output**
-pre-processed targets
 
 ##### Using particular fields
 
