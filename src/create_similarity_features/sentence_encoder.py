@@ -4,8 +4,8 @@ import nltk
 import tensorflow_hub as hub
 import torch
 
-from claimlinking_simba.src.create_similarity_features import SRC_PATH
-from claimlinking_simba.src.create_similarity_features.infersent_encoder.infersent.models import InferSent
+from ...src.create_similarity_features import SRC_PATH
+from ...src.create_similarity_features.infersent_encoder.infersent.models import InferSent
 
 # from src.create_similarity_features import SRC_PATH
 # from src.create_similarity_features.infersent_encoder.infersent.models import InferSent
