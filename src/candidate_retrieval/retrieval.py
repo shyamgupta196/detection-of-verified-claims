@@ -19,6 +19,7 @@ import lexical_similarity
 import referential_similarity
 import sentence_encoder
 import string_similarity
+sys.path.insert(0, os.path.join(base_path, ".."))
 import utils
 
 from utils import get_queries, get_targets, load_pickled_object, decompress_file, pickle_object, \
