@@ -15,7 +15,7 @@ from scipy.spatial.distance import cdist
 from pathlib import Path
 
 base_path = os.path.abspath(os.path.dirname(__file__))
-DATA_PATH = os.path.join(base_path, "../../data")
+DATA_PATH = os.path.join(base_path, "../../data/")
 sys.path.append(os.path.join(base_path, "../create_similarity_features"))
 sys.path.append(os.path.join(base_path, "../learning"))
 sys.path.append(os.path.join(base_path, ".."))
@@ -24,6 +24,7 @@ import lexical_similarity
 import referential_similarity
 import sentence_encoder
 import string_similarity
+sys.path.insert(0, os.path.join(base_path, ".."))
 import utils
 import create_feature_set
 
@@ -95,11 +96,11 @@ def run():
     possibly stored files:
     stored_sim_scores: {query_id: list of sim scores for all targets in order of original targets}
     """
-    caching_directory = DATA_PATH + "cache/" + args.data_cache
+    caching_directory = os.path.join(DATA_PATH, "cache", args.data_cache)
     if args.gesis_unsup:
-        caching_directory_targets = DATA_PATH + "cache/gesis_unsup_labels"
+        caching_directory_targets = os.path.join(DATA_PATH, "cache/gesis_unsup_labels")
     elif args.corpus_sizes:
-        caching_directory_targets = DATA_PATH + "cache/corpus_size_targets_"+args.data
+        caching_directory_targets = os.path.join(DATA_PATH, "cache/corpus_size_targets_"+args.data)
     else:
         caching_directory_targets = caching_directory
     Path(caching_directory).mkdir(parents=True, exist_ok=True)
@@ -111,7 +112,7 @@ def run():
     if args.ranking_only:
         candidates = all_targets_as_query_candidates(list(queries.keys()), list(targets.keys()))
     else:
-        candidates_path = DATA_PATH + args.data + "/candidates"
+        candidates_path = os.path.join(DATA_PATH, args.data, "candidates")
         candidates = load_pickled_object(decompress_file(candidates_path+".pickle"+".zip"))
     candidate_targets = get_candidate_targets(candidates, targets)
     candidate_target_ids = list(candidate_targets.keys())
@@ -119,8 +120,8 @@ def run():
     all_sim_scores = {}
     for query_id in list(queries.keys()):
         all_sim_scores[query_id] = []
-    output_path = DATA_PATH + args.data + "/pred_qrels.tsv"
-    Path(DATA_PATH + args.data).mkdir(parents=True, exist_ok=True)
+    output_path = os.path.join(DATA_PATH, args.data, "pred_qrels.tsv")
+    Path(os.path.join(DATA_PATH, args.data)).mkdir(parents=True, exist_ok=True)
     """
     0. Learning
     """
@@ -464,9 +465,9 @@ def run():
         X_test = scaler.transform(X_test)
         y_test = classifier.predict_proba(X_test)*100
         test_df['label'] = y_test[:, 1]
-        test_df_path = DATA_PATH + args.data + "/pred_test.tsv"
+        test_df_path = os.path.join(DATA_PATH, args.data, "pred_test.tsv")
         test_df.to_csv(test_df_path, index=False, header=False, sep='\t')
-        supervised_output_path = DATA_PATH + args.data + "/pred_qrels_supervised.tsv"
+        supervised_output_path = os.path.join(DATA_PATH, args.data, "pred_qrels_supervised.tsv")
         supervised_output_to_pred_qrels(test_df, queries, args.k, supervised_output_path)
     else:
         if args.union:

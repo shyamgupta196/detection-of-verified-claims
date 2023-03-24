@@ -2,17 +2,25 @@ import os
 import pandas as pd
 import numpy as np
 from pathlib import Path
+import sys
 
 import torch
 from scipy.spatial.distance import cdist
 
-from claimlinking_simba.src.create_similarity_features import DATA_PATH
-from claimlinking_simba.src.create_similarity_features.lexical_similarity import get_lexical_entities
-from claimlinking_simba.src.create_similarity_features.referential_similarity import get_sequence_entities
-from claimlinking_simba.src.create_similarity_features.sentence_encoder import encode_queries, encode_targets
-from claimlinking_simba.src.create_similarity_features.string_similarity import get_string_similarity
-from claimlinking_simba.src.utils import get_queries, get_correct_targets, decompress_file, load_pickled_object, \
-    get_number_of_tokens, pickle_object, compress_file, make_top_k_dictionary
+base_path = os.path.abspath(os.path.dirname(__file__))
+sys.path.append(os.path.join(base_path, ".."))
+import create_similarity_features
+
+from create_similarity_features import DATA_PATH
+from create_similarity_features.lexical_similarity import get_lexical_entities
+from create_similarity_features.referential_similarity import get_sequence_entities
+from create_similarity_features.sentence_encoder import encode_queries, encode_targets
+from create_similarity_features.string_similarity import get_string_similarity
+
+sys.path.insert(0, os.path.join(base_path, ".."))
+import utils
+#from utils import get_queries, get_correct_targets, decompress_file, load_pickled_object, \
+#    get_number_of_tokens, pickle_object, compress_file, make_top_k_dictionary
 
 
 def create_feature_set(data, targets, similarity_measure, sentence_embedding_models, referential_similarity_measures, lexical_similarity_measures, string_similarity_measures):
@@ -25,7 +33,7 @@ def create_feature_set(data, targets, similarity_measure, sentence_embedding_mod
     caching_directory = DATA_PATH + "cache/training/" + data
     Path(caching_directory).mkdir(parents=True, exist_ok=True)
     queries_path = DATA_PATH + 'training/' + data + '/queries.tsv'
-    queries = get_queries(queries_path)
+    queries = utils.get_queries(queries_path)
     all_features = []
     feature_names = ""
     for feature in sentence_embedding_models:
@@ -44,11 +52,11 @@ def create_feature_set(data, targets, similarity_measure, sentence_embedding_mod
     output_path_root = DATA_PATH + data
     Path(output_path_root).mkdir(parents=True, exist_ok=True)
     gold_path = DATA_PATH + 'training/' + data + '/gold.tsv'
-    correct_targets = get_correct_targets(gold_path)
+    correct_targets = utils.get_correct_targets(gold_path)
     output_path = DATA_PATH + 'training/' + data + '/' + feature_names + '_feature_set'
     if os.path.exists(output_path):
         print('exists')
-        feature_set_df = load_pickled_object(decompress_file(output_path+ ".pickle" + ".zip"))
+        feature_set_df = utils.load_pickled_object(utils.decompress_file(output_path+ ".pickle" + ".zip"))
     else:
         """
         0. Get number of tokens of
@@ -59,17 +67,17 @@ def create_feature_set(data, targets, similarity_measure, sentence_embedding_mod
         token_lens = {}
         stored_token_lens = caching_directory + "/token_lens"
         if os.path.exists(stored_token_lens + ".pickle" + ".zip"):
-            token_lens = load_pickled_object(decompress_file(stored_token_lens + ".pickle" + ".zip"))
+            token_lens = utils.load_pickled_object(utils.decompress_file(stored_token_lens + ".pickle" + ".zip"))
         else:
             for query_id, query_text in queries.items():
-                n_query_tokens = get_number_of_tokens(query_text)
+                n_query_tokens = utils.get_number_of_tokens(query_text)
                 this_query_token_lens = {}
                 for target_id, target_text in targets.items():
-                    n_target_tokens = get_number_of_tokens(target_text)
+                    n_target_tokens = utils.get_number_of_tokens(target_text)
                     this_query_token_lens[target_id] = n_query_tokens + n_target_tokens
                 token_lens[query_id] = this_query_token_lens
-            pickle_object(stored_token_lens, token_lens)
-            compress_file(stored_token_lens + ".pickle")
+            utils.pickle_object(stored_token_lens, token_lens)
+            utils.compress_file(stored_token_lens + ".pickle")
             os.remove(stored_token_lens + ".pickle")
         """
         1. For all sentence embedding models:
@@ -87,24 +95,24 @@ def create_feature_set(data, targets, similarity_measure, sentence_embedding_mod
             stored_embedded_targets = caching_directory_targets + "/embedded_targets_" + model_name
             stored_sim_scores = caching_directory + "/sim_scores_" + model_name
             if os.path.exists(stored_sim_scores + ".pickle" + ".zip"):
-                sim_scores_to_store = load_pickled_object(decompress_file(stored_sim_scores + ".pickle" + ".zip"))
+                sim_scores_to_store = utils.load_pickled_object(utils.decompress_file(stored_sim_scores + ".pickle" + ".zip"))
                 for query_id in list(queries.keys()):
                     all_sim_scores[query_id].append(sim_scores_to_store[query_id])
             else:
                 sim_scores_to_store = {}
                 if os.path.exists(stored_embedded_queries + ".pickle" + ".zip"):
-                    embedded_queries = load_pickled_object(decompress_file(stored_embedded_queries + ".pickle" + ".zip"))
+                    embedded_queries = utils.load_pickled_object(utils.decompress_file(stored_embedded_queries + ".pickle" + ".zip"))
                 else:
                     embedded_queries = encode_queries(queries, model)
-                    pickle_object(stored_embedded_queries, embedded_queries)
-                    compress_file(stored_embedded_queries + ".pickle")
+                    utils.pickle_object(stored_embedded_queries, embedded_queries)
+                    utils.compress_file(stored_embedded_queries + ".pickle")
                     os.remove(stored_embedded_queries + ".pickle")
                 if os.path.exists(stored_embedded_targets + ".pickle" + ".zip"):
-                    embedded_targets = load_pickled_object(decompress_file(stored_embedded_targets + ".pickle" + ".zip"))
+                    embedded_targets = utils.load_pickled_object(utils.decompress_file(stored_embedded_targets + ".pickle" + ".zip"))
                 else:
                     embedded_targets = encode_targets(targets, model)
-                    pickle_object(stored_embedded_targets, embedded_targets)
-                    compress_file(stored_embedded_targets + ".pickle")
+                    utils.pickle_object(stored_embedded_targets, embedded_targets)
+                    utils.compress_file(stored_embedded_targets + ".pickle")
                     os.remove(stored_embedded_targets + ".pickle")
                 for query_id in list(queries.keys()):
                     query_embedding = embedded_queries[query_id].reshape(1, -1)
@@ -115,8 +123,8 @@ def create_feature_set(data, targets, similarity_measure, sentence_embedding_mod
                     sim_scores = sim_scores.reshape(n_targets, )
                     all_sim_scores[query_id].append(sim_scores)
                     sim_scores_to_store[query_id] = sim_scores
-                pickle_object(stored_sim_scores, sim_scores_to_store)
-                compress_file(stored_sim_scores + ".pickle")
+                utils.pickle_object(stored_sim_scores, sim_scores_to_store)
+                utils.compress_file(stored_sim_scores + ".pickle")
                 os.remove(stored_sim_scores + ".pickle")
         """
         2. For all referential similarity measures\
@@ -130,24 +138,24 @@ def create_feature_set(data, targets, similarity_measure, sentence_embedding_mod
             stored_entities_targets = caching_directory_targets + "/targets_" + str(ref_feature)
             stored_sim_scores = caching_directory + "/sim_scores_" + ref_feature
             if os.path.exists(stored_sim_scores + ".pickle" + ".zip"):
-                sim_scores_to_store = load_pickled_object(decompress_file(stored_sim_scores + ".pickle" + ".zip"))
+                sim_scores_to_store = utils.load_pickled_object(utils.decompress_file(stored_sim_scores + ".pickle" + ".zip"))
                 for query_id in list(queries.keys()):
                     all_sim_scores[query_id].append(sim_scores_to_store[query_id])
             else:
                 sim_scores_to_store = {}
                 if os.path.exists(stored_entities_queries + ".pickle" + ".zip"):
-                    entities_queries = load_pickled_object(decompress_file(stored_entities_queries + ".pickle" + ".zip"))
+                    entities_queries = utils.load_pickled_object(utils.decompress_file(stored_entities_queries + ".pickle" + ".zip"))
                 else:
                     entities_queries = get_sequence_entities(queries, ref_feature)
-                    pickle_object(stored_entities_queries, entities_queries)
-                    compress_file(stored_entities_queries + ".pickle")
+                    utils.pickle_object(stored_entities_queries, entities_queries)
+                    utils.compress_file(stored_entities_queries + ".pickle")
                     os.remove(stored_entities_queries + ".pickle")
                 if os.path.exists(stored_entities_targets + ".pickle" + ".zip"):
-                    entities_targets = load_pickled_object(decompress_file(stored_entities_targets + ".pickle" + ".zip"))
+                    entities_targets = utils.load_pickled_object(utils.decompress_file(stored_entities_targets + ".pickle" + ".zip"))
                 else:
                     entities_targets = get_sequence_entities(targets, ref_feature)
-                    pickle_object(stored_entities_targets, entities_targets)
-                    compress_file(stored_entities_targets + ".pickle")
+                    utils.pickle_object(stored_entities_targets, entities_targets)
+                    utils.compress_file(stored_entities_targets + ".pickle")
                     os.remove(stored_entities_targets + ".pickle")
                 for query_id in list(queries.keys()):
                     query_entities = set(entities_queries[query_id])
@@ -162,8 +170,8 @@ def create_feature_set(data, targets, similarity_measure, sentence_embedding_mod
                             sim_scores[idx] = ratio
                     all_sim_scores[query_id].append(sim_scores)
                     sim_scores_to_store[query_id] = sim_scores
-                pickle_object(stored_sim_scores, sim_scores_to_store)
-                compress_file(stored_sim_scores + ".pickle")
+                utils.pickle_object(stored_sim_scores, sim_scores_to_store)
+                utils.compress_file(stored_sim_scores + ".pickle")
                 os.remove(stored_sim_scores + ".pickle")
         """
         3. For all lexical similarity measures
@@ -177,24 +185,24 @@ def create_feature_set(data, targets, similarity_measure, sentence_embedding_mod
             stored_entities_targets = caching_directory + "/targets_" + str(lex_feature)
             stored_sim_scores = caching_directory + "/sim_scores_" + lex_feature
             if os.path.exists(stored_sim_scores + ".pickle" + ".zip"):
-                sim_scores_to_store = load_pickled_object(decompress_file(stored_sim_scores + ".pickle" + ".zip"))
+                sim_scores_to_store = utils.load_pickled_object(utils.decompress_file(stored_sim_scores + ".pickle" + ".zip"))
                 for query_id in list(queries.keys()):
                     all_sim_scores[query_id].append(sim_scores_to_store[query_id])
             else:
                 sim_scores_to_store = {}
                 if os.path.exists(stored_entities_queries + ".pickle" + ".zip"):
-                    entities_queries = load_pickled_object(decompress_file(stored_entities_queries + ".pickle" + ".zip"))
+                    entities_queries = utils.load_pickled_object(utils.decompress_file(stored_entities_queries + ".pickle" + ".zip"))
                 else:
                     entities_queries = get_lexical_entities(queries, lex_feature)
-                    pickle_object(stored_entities_queries, entities_queries)
-                    compress_file(stored_entities_queries + ".pickle")
+                    utils.pickle_object(stored_entities_queries, entities_queries)
+                    utils.compress_file(stored_entities_queries + ".pickle")
                     os.remove(stored_entities_queries + ".pickle")
                 if os.path.exists(stored_entities_targets + ".pickle" + ".zip"):
-                    entities_targets = load_pickled_object(decompress_file(stored_entities_targets + ".pickle" + ".zip"))
+                    entities_targets = utils.load_pickled_object(utils.decompress_file(stored_entities_targets + ".pickle" + ".zip"))
                 else:
                     entities_targets = get_lexical_entities(targets, lex_feature)
-                    pickle_object(stored_entities_targets, entities_targets)
-                    compress_file(stored_entities_targets + ".pickle")
+                    utils.pickle_object(stored_entities_targets, entities_targets)
+                    utils.compress_file(stored_entities_targets + ".pickle")
                     os.remove(stored_entities_targets + ".pickle")
                 for query_id in list(queries.keys()):
                     query_entities = set(entities_queries[query_id])
@@ -213,8 +221,8 @@ def create_feature_set(data, targets, similarity_measure, sentence_embedding_mod
                             sim_scores[idx] = ratio
                     all_sim_scores[query_id].append(sim_scores)
                     sim_scores_to_store[query_id] = sim_scores
-                pickle_object(stored_sim_scores, sim_scores_to_store)
-                compress_file(stored_sim_scores + ".pickle")
+                utils.pickle_object(stored_sim_scores, sim_scores_to_store)
+                utils.compress_file(stored_sim_scores + ".pickle")
                 os.remove(stored_sim_scores + ".pickle")
         """
         4. For all string similarity measures
@@ -225,7 +233,7 @@ def create_feature_set(data, targets, similarity_measure, sentence_embedding_mod
             stored_sim_scores = caching_directory + "/sim_scores_" + string_feature
             sim_scores_to_store = {}
             if os.path.exists(stored_sim_scores + ".pickle" + ".zip"):
-                sim_scores_to_store = load_pickled_object(decompress_file(stored_sim_scores + ".pickle" + ".zip"))
+                sim_scores_to_store = utils.load_pickled_object(utils.decompress_file(stored_sim_scores + ".pickle" + ".zip"))
                 for query_id in list(queries.keys()):
                     all_sim_scores[query_id].append(sim_scores_to_store[query_id])
             else:
@@ -237,8 +245,8 @@ def create_feature_set(data, targets, similarity_measure, sentence_embedding_mod
                         sim_scores[idx] = get_string_similarity(query, target, string_feature)
                     sim_scores_to_store[query_id] = sim_scores
                     all_sim_scores[query_id].append(sim_scores)
-                pickle_object(stored_sim_scores, sim_scores_to_store)
-                compress_file(stored_sim_scores + ".pickle")
+                utils.pickle_object(stored_sim_scores, sim_scores_to_store)
+                utils.compress_file(stored_sim_scores + ".pickle")
                 os.remove(stored_sim_scores + ".pickle")
 
         """
@@ -258,7 +266,7 @@ def create_feature_set(data, targets, similarity_measure, sentence_embedding_mod
                                                                    dim=1, largest=True)
             sim_scores_top_k_values = sim_scores_top_k_values.cpu().tolist()
             sim_scores_top_k_idx = sim_scores_top_k_idx.cpu().tolist()
-            this_feature_top_k = make_top_k_dictionary(list(queries.keys()), list(targets.keys()), sim_scores_top_k_values, sim_scores_top_k_idx)
+            this_feature_top_k = utils.make_top_k_dictionary(list(queries.keys()), list(targets.keys()), sim_scores_top_k_values, sim_scores_top_k_idx)
             feature_top_ks[feature] = this_feature_top_k
         for query_id in list(queries.keys()):
             for feature in all_features:
@@ -280,7 +288,7 @@ def create_feature_set(data, targets, similarity_measure, sentence_embedding_mod
             else:
                 model_name = str(model)
             stored_sim_scores = caching_directory + "/sim_scores_" + model_name
-            sim_scores_to_store = load_pickled_object(decompress_file(stored_sim_scores + ".pickle" + ".zip"))
+            sim_scores_to_store = utils.load_pickled_object(utils.decompress_file(stored_sim_scores + ".pickle" + ".zip"))
             for query_id in list(queries.keys()):
                 current_candidate_ids = candidates[query_id]
                 current_sim_scores = sim_scores_to_store[query_id]
@@ -294,7 +302,7 @@ def create_feature_set(data, targets, similarity_measure, sentence_embedding_mod
         """
         for ref_feature in referential_similarity_measures:
             stored_sim_scores = caching_directory + "/sim_scores_" + ref_feature
-            sim_scores_to_store = load_pickled_object(decompress_file(stored_sim_scores + ".pickle" + ".zip"))
+            sim_scores_to_store = utils.load_pickled_object(utils.decompress_file(stored_sim_scores + ".pickle" + ".zip"))
             for query_id in list(queries.keys()):
                 current_candidate_ids = candidates[query_id]
                 current_sim_scores = sim_scores_to_store[query_id]
@@ -308,7 +316,7 @@ def create_feature_set(data, targets, similarity_measure, sentence_embedding_mod
         """
         for lex_feature in lexical_similarity_measures:
             stored_sim_scores = caching_directory + "/sim_scores_" + lex_feature
-            sim_scores_to_store = load_pickled_object(decompress_file(stored_sim_scores + ".pickle" + ".zip"))
+            sim_scores_to_store = utils.load_pickled_object(utils.decompress_file(stored_sim_scores + ".pickle" + ".zip"))
             for query_id in list(queries.keys()):
                 current_candidate_ids = candidates[query_id]
                 current_sim_scores = sim_scores_to_store[query_id]
@@ -322,7 +330,7 @@ def create_feature_set(data, targets, similarity_measure, sentence_embedding_mod
         """
         for string_feature in string_similarity_measures:
             stored_sim_scores = caching_directory + "/sim_scores_" + string_feature
-            sim_scores_to_store = load_pickled_object(decompress_file(stored_sim_scores + ".pickle" + ".zip"))
+            sim_scores_to_store = utils.load_pickled_object(utils.decompress_file(stored_sim_scores + ".pickle" + ".zip"))
             for query_id in list(queries.keys()):
                 current_candidate_ids = candidates[query_id]
                 current_sim_scores = sim_scores_to_store[query_id]
@@ -405,8 +413,8 @@ def create_feature_set(data, targets, similarity_measure, sentence_embedding_mod
                 except:
                     print('correct target for query with id ' + str(old_query_id) + ' not available')
 
-        pickle_object(output_path, feature_set_df)
-        compress_file(output_path + ".pickle")
+        utils.pickle_object(output_path, feature_set_df)
+        utils.compress_file(output_path + ".pickle")
         os.remove(output_path + ".pickle")
         output_path_tsv = output_path+ '.tsv'
         feature_set_df.to_csv(output_path_tsv, index=False, header=True, sep='\t')
@@ -426,8 +434,8 @@ def create_test_set(all_sim_scores, candidates, all_features, data):
         test_df = pd.concat([test_df, this_query_df])
 
     output_path_test_set = DATA_PATH + data + "/test_df"
-    pickle_object(output_path_test_set, test_df)
-    compress_file(output_path_test_set + ".pickle")
+    utils.pickle_object(output_path_test_set, test_df)
+    utils.compress_file(output_path_test_set + ".pickle")
     os.remove(output_path_test_set + ".pickle")
     output_path_tsv = DATA_PATH + data + '/test_feature_set.tsv'
     test_df.to_csv(output_path_tsv, index=False, header=True, sep='\t')

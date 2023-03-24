@@ -11,7 +11,7 @@ from scipy.spatial.distance import cdist
 from pathlib import Path
 
 base_path = os.path.abspath(os.path.dirname(__file__))
-DATA_PATH = os.path.join(base_path, "../../data")
+DATA_PATH = os.path.join(base_path, "../../data/")
 sys.path.append(os.path.join(base_path, "../create_similarity_features"))
 sys.path.append(os.path.join(base_path, ".."))
 import re_ranking
