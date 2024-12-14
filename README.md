@@ -1,23 +1,52 @@
 
 # SimBa
 
-SimBa is an unsupervised IR-pipeline designed for STS tasks. 
-For Candidate Retrieval it makes use of sentence embedding models,
-for Re-Ranking additionally of simple lexical overlap between query and target.
+This method enables fact-checking of arbitrary claims or statements (e.g. taken from online discourse and social media posts). It takes advantage of a unique and constantly updated repository of fact-checked claims mined from the web (ClaimsKG).
 
-There are separate scripts available for getting CLEF CheckThat! claim matching datasets,
-for candidate retrieval, for re-ranking and for evaluation.
+ClaimsKG is a structured KnowledgeBase which serves as a registry of claims. The KB is updated at regular intervals. Thea latest release of ClaimsKG contains 74000 claims collected from 13 different fact-checking websites from the year 1996 to 2023. For more details regarding ClaimsKG like the latest release and related papers, please refer to the official webpage https://data.gesis.org/claimskg/
 
-The results presented here were created using the sentence encoders "all-mpnet-base-v2"
-to retrieve the k=50 closest candidate-targets for every input query according to braycurtis distance.
-For re-ranking we used "all-mpnet-base-v2", "princeton-nlp/unsup-simcse-roberta-base" and\
-"sentence-transformers/sentence-t5-base" and the ratio of similar words ("similar_words_ratio) as features.
+The method receives an input claim/sentence , computes similarity with 74000 previously fact-checked claims from ClaimsKG and returns a set of ranked claims from , their relevance scores, veracity ratings and the corresponding fact-check sources
 
-For the queries the whole input claims were used, for the targets the fields "vclaim" and "title" of the vclaims.
-The results for all checkthat labs can be reproduced using the script "check_that". The output files will be stored in the folder "run0".
-Execution times for claimlinking can be tested using teh script "check_that_corpus_sizes".
-There an additional retrieval step caches only the target embeddings and time is measured for embedding queries and computing similarity scores.
+# SimBa Project Installation and Setup Guide
 
+## 1. **Install Python (Version 3.11.6)**
+
+SimBa requires **Python 3.11.6** to run. Follow the steps below to install it on your system:
+
+SimBa has been tested with Python 3.11.6. Using other Python versions might require other package versions.
+
+1. **Download Python 3.11.6** from the official Python website:  
+   [https://www.python.org/downloads/release/python-3116/](https://www.python.org/downloads/release/python-3116/).
+
+2. **Install Python**:
+   - **During installation**, make sure to **check the box** that says **"Add Python to PATH"**. This step is crucial, as it ensures that Python and pip (Python's package manager) are available in your terminal or command prompt.
+   - Follow the on-screen instructions to complete the installation.
+
+3. **Verify the Installation**:
+   After installation, open your terminal (or command prompt) and type the following command to check if Python was installed correctly:
+   ```bash
+   python --version
+
+
+### 2. **Clone the Repository and Navigate to the Main Project Directory**
+ To download SimBa, clone the repository from GitHub.
+
+ Run the following commands in your terminal or command prompt: 
+       
+       git clone <repository-url>
+
+       cd <repository name>
+    
+
+### 3. **Install Required Dependencies**
+ SimBa's required libraries and dependencies are listed in the requirements.txt file. Install them using the following command:
+      
+      pip install -r requirements.txt
+
+### 4. Run the Project
+Once everything is installed, you can run the SimBa project. To do so, use the following command in the terminal:
+
+      python check_that.py
 ## Results
 
 | Datast  | Map@1 | Map@3     | Map@5 |  
