@@ -9,11 +9,11 @@ The method receives an input claim/sentence , computes similarity with 74000 pre
 
 # SimBa Project Installation and Setup Guide
 
+This version of SimBa has been tested with **Python 3.11.6** on Windows. Using other Python versions and/or operating systems might require other package versions. 
+
+Follow the steps below to install SimBa on your system using the recommended setup. 
+
 ## 1. **Install Python (Version 3.11.6)**
-
-SimBa requires **Python 3.11.6** to run. Follow the steps below to install it on your system:
-
-SimBa has been tested with Python 3.11.6. Using other Python versions might require other package versions.
 
 1. **Download Python 3.11.6** from the official Python website:  
    [https://www.python.org/downloads/release/python-3116/](https://www.python.org/downloads/release/python-3116/).
@@ -38,10 +38,29 @@ SimBa has been tested with Python 3.11.6. Using other Python versions might requ
        cd <repository name>
     
 
-### 3. **Install Required Dependencies**
+### 3. **Install Required Dependencies and Data**
  SimBa's required libraries and dependencies are listed in the requirements.txt file. Install them using the following command:
       
       pip install -r requirements.txt
+
+To download data required by the NLTK library, start the Python interpreter
+```
+    python
+```
+
+then use nltk's download method:
+
+```
+    import nltk
+    nltk.download(‘stopwords’)
+    nltk.download(‘punkt’)
+```
+Afterwards, exit the interpreter:
+```
+    exit()
+```
+
+      
 
 ### 4. Run the Project
 Once everything is installed, you can run the SimBa project. To do so, use the following command in the terminal:
