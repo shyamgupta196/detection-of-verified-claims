@@ -9,7 +9,7 @@ def run():
     offline_times = []
     for size in ["1k", "1k", "1k", "1k", "5k", "5k", "5k", "10k", "10k", "10k"]:
         dataset = os.path.join(base_path, "..", size + "_sample.tsv")
-        queries_path = os.path.join(base_path, "../claimlinking_riet/claimlinking_clef2020-factchecking-task2/test-input/tweets.queries.tsv")
+        queries_path = os.path.join(base_path, "../claimlinking_clef2020-factchecking-task2/test-input/tweets.queries.tsv")
         # get the verified claims embeddings
         data_name = "check_that" + size
         # delete old cache
@@ -82,8 +82,8 @@ def run():
         times.append(time.time() - start_time)
         # Check if output file was created correctly by evaluating with standard evaluation script
         # Don't measure exceution time for that
-        clef2020_path = os.path.join(base_path, "../claimlinking_riet/claimlinking_clef2020-factchecking-task2/") 
-        clef2022_path = os.path.join(base_path, "../claimlinking_riet/claimlinking_clef2022-checkthat-lab/task2/")
+        clef2020_path = os.path.join(base_path, "../claimlinking_clef2020-factchecking-task2/") 
+        clef2022_path = os.path.join(base_path, "../claimlinking_clef2022-checkthat-lab/task2/")
         pred_file_path = base_path + "/data/"+data_name+"/pred_qrels.tsv"
         subprocess.call(["python", os.path.join(clef2022_path, "scorer/main.py"), "--pred-file-path", pred_file_path, "--gold-file-path", os.path.join(clef2020_path, "test-input/tweet-vclaim-pairs.qrels")], cwd=clef2022_path)
     return times, offline_times
