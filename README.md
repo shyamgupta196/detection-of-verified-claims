@@ -5,7 +5,7 @@ This method enables fact-checking of arbitrary claims or statements (e.g. taken 
 
 ClaimsKG is a structured KnowledgeBase which serves as a registry of claims. The KB is updated at regular intervals. Thea latest release of ClaimsKG contains 74000 claims collected from 13 different fact-checking websites from the year 1996 to 2023. For more details regarding ClaimsKG like the latest release and related papers, please refer to the official webpage https://data.gesis.org/claimskg/
 
-The method receives an input claim/sentence , computes similarity with 74000 previously fact-checked claims from ClaimsKG and returns a set of ranked claims from , their relevance scores, veracity ratings and the corresponding fact-check sources
+The method receives an input claim/sentence, computes similarity with 74000 previously fact-checked claims from ClaimsKG and returns a set of ranked claims, their relevance scores, veracity ratings and the corresponding fact-check sources. 
 
 # SimBa Project Installation and Setup Guide
 
@@ -65,7 +65,7 @@ Afterwards, exit the interpreter:
 ### 4. Run the Project
 Once everything is installed, you can run the SimBa project. To do so, use the following command in the terminal:
 
-      python check_that.py
+      python main.py
 
 ## Keywords
 verified claims retrieval, semantic similarity, claims ranking
@@ -77,7 +77,16 @@ verified claims retrieval, semantic similarity, claims ranking
 
 ## Repository Structure
 
-## Results
+## Arcitecture
+
+1. Candidate Retrieval
+2. Re-Ranking
+
+SimBA operates in two steps: 
+In the first step, the most similar claims are retrieved as candidates. 
+In a second step, a computationally more costly re-ranking step is applied to all candidates in order to find the best matches. 
+
+SimBA was evaluated on the CLEF CheckThat! Lab ClaimLinking challenge data and achieved the following scores: 
 
 | Datast  | Map@1 | Map@3     | Map@5 |  
 |---|---|-----------|---|
@@ -87,16 +96,15 @@ verified claims retrieval, semantic similarity, claims ranking
 | 2022 2a English  | 0.9043  | 0.9258    |  0.9258 
 | 2022 2b English  | 0.4462  | 0.4744    |  0.4805
 
+For more details about this method, please refer to the following publcations: 
 
-## Arcitecture
+Hövelmeyer, Alica, Katarina Boland, and Stefan Dietze. 2022. "SimBa at CheckThat! 2022: Lexical and Semantic Similarity-Based Detection of Verified Claims in an Unsupervised and Supervised Way." In CLEF Working Notes 2022, Proceedings of the Working Notes of CLEF 2022- Conference and Labs of the Evaluation Forum, edited by Guglielmo Faggioli, Nicola Ferro, Allan Hanbury, and Martin Potthast, CEUR Workshop Proceedings 3180, 511-531. Aachen: RWTH Aachen. https://ceur-ws.org/Vol-3180/paper-40.pdf. 
 
-1. Retrieval
-2. Re-Ranking
-3. Learning
+Boland, Katarina, Hövelmeyer, Alica, Fafalios, Pavlos, Todorov, Konstantin, Mazhar, Usama, & Dietze, Stefan (2023). Robust and efficient claim retrieval for online fact-checking applications. Pre-print. https://doi.org/10.21203/rs.3.rs-3007151/v1
 
 
 ## Contact
-For further assistance or inquiries, please contact: ali.elboukili@gesis.org
+For further assistance or inquiries, please contact: katarina.boland@hhu.de
 
 
 
