@@ -1,19 +1,19 @@
 
 # SimBa
 
-This method enables fact-checking of arbitrary claims or statements (e.g. taken from online discourse and social media posts). It takes advantage of a unique and constantly updated repository of fact-checked claims mined from the web (ClaimsKG).
+This method facilitates fact-checking of arbitrary claims or statements (e.g. taken from online discourse and social media posts). It takes advantage of a unique and constantly updated repository of fact-checked claims mined from the web (ClaimsKG).
 
-ClaimsKG is a structured KnowledgeBase which serves as a registry of claims. The KB is updated at regular intervals. Thea latest release of ClaimsKG contains 74000 claims collected from 13 different fact-checking websites from the year 1996 to 2023. For more details regarding ClaimsKG like the latest release and related papers, please refer to the official webpage https://data.gesis.org/claimskg/
+ClaimsKG is a structured knowledge base (KB) which serves as a registry of claims. The KB is updated at regular intervals. The latest release of ClaimsKG contains 74000 claims collected from 13 different fact-checking websites from the year 1996 to 2023. For more details regarding ClaimsKG, please refer to the official webpage https://data.gesis.org/claimskg/
 
 The method receives an input claim/sentence, computes similarity with 74000 previously fact-checked claims from ClaimsKG and returns a set of ranked claims, their relevance scores, veracity ratings and the corresponding fact-check sources. 
 
 ## Keywords
-verified claims retrieval, semantic similarity, claims ranking
+verified claim retrieval, semantic similarity, detection of previously fact-checked claims
 
 ## Social Science Usecase
   1. Check the veracity of claims uttered online to analyze misinformation spread
-  2. Find out which claims have been fact-checked before and which have not to gain information on perceived check-worthiness
-  3. Find claims that are similar to claims that have been previously fact-checked to analyze information spread
+  2. Find out which claims have been fact-checked before and which have not to gain information on perceived check-worthiness of statements
+  3. Find claims that are semantically similar to claims that have been previously fact-checked to analyze information spread
 
 
 # SimBa Project Installation and Setup Guide
@@ -70,22 +70,45 @@ Afterwards, exit the interpreter:
 ```
 
 
-### 4. Run the Project
+# How to Use
 Once everything is installed, you can run the SimBa project. To do so, use the following command in the terminal:
 
       python main.py
 
 
 ## Repository Structure
+...
 
-## Arcitecture
+## Input Data
+
+### Required
+The required input consists of an input query file ("queries.tsv"): 
+a text file in .tsv format (tab-separated) containing one claim per line. For each of the claims, SimBA will retrieve the most similar fact-checked claims in ClaimsKG. 
+
+### Optional
+If desired, different corpus than ClaimsKG can be supplied as database ("corpus.tsv"). 
+
+If available, a goldstandard can be supplied which lists the optimal results ("gold.tsv"). This can be used to evaluate SimBA's performance. 
+
+## Sample Input
+...
+
+## Output Data
+...
+
+## Sample Output
+...
+
+## Architecture
+
+SimBA is fully unsupervised, i.e. it does not need any training data. 
+It operates in two steps:
 
 1. Candidate Retrieval
 2. Re-Ranking
 
-SimBA operates in two steps: 
-In the first step, the most similar claims are retrieved as candidates. 
-In a second step, a computationally more costly re-ranking step is applied to all candidates in order to find the best matches. 
+In the first step, the semantically most similar claims are retrieved as candidates. Semantic similarity is computed using sentence embeddings. 
+In a second step, a computationally more costly re-ranking step is applied to all candidates in order to find the best matches. Again, sentence embeddings combined with a lexical feature are used. 
 
 SimBA was evaluated on the CLEF CheckThat! Lab ClaimLinking challenge data and achieved the following scores: 
 
@@ -97,7 +120,7 @@ SimBA was evaluated on the CLEF CheckThat! Lab ClaimLinking challenge data and a
 | 2022 2a English  | 0.9043  | 0.9258    |  0.9258 
 | 2022 2b English  | 0.4462  | 0.4744    |  0.4805
 
-For more details about this method, please refer to the following publcations: 
+For more details about this method, please refer to the following publications: 
 
 Hövelmeyer, Alica, Katarina Boland, and Stefan Dietze. 2022. "SimBa at CheckThat! 2022: Lexical and Semantic Similarity-Based Detection of Verified Claims in an Unsupervised and Supervised Way." In CLEF Working Notes 2022, Proceedings of the Working Notes of CLEF 2022- Conference and Labs of the Evaluation Forum, edited by Guglielmo Faggioli, Nicola Ferro, Allan Hanbury, and Martin Potthast, CEUR Workshop Proceedings 3180, 511-531. Aachen: RWTH Aachen. https://ceur-ws.org/Vol-3180/paper-40.pdf. 
 
