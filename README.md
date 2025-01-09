@@ -7,6 +7,15 @@ ClaimsKG is a structured KnowledgeBase which serves as a registry of claims. The
 
 The method receives an input claim/sentence, computes similarity with 74000 previously fact-checked claims from ClaimsKG and returns a set of ranked claims, their relevance scores, veracity ratings and the corresponding fact-check sources. 
 
+## Keywords
+verified claims retrieval, semantic similarity, claims ranking
+
+## Social Science Usecase
+  1. Check the veracity of claims uttered online to analyze misinformation spread
+  2. Find out which claims have been fact-checked before and which have not to gain information on perceived check-worthiness
+  3. Find claims that are similar to claims that have been previously fact-checked to analyze information spread
+
+
 # SimBa Project Installation and Setup Guide
 
 This version of SimBa has been tested with **Python 3.11.6** on Windows. Using other Python versions and/or operating systems might require other package versions. 
@@ -60,20 +69,12 @@ Afterwards, exit the interpreter:
     exit()
 ```
 
-      
 
 ### 4. Run the Project
 Once everything is installed, you can run the SimBa project. To do so, use the following command in the terminal:
 
       python main.py
 
-## Keywords
-verified claims retrieval, semantic similarity, claims ranking
-
-## Social Science Usecase
-  1. A social scientist focuses on misinformation in the social media discourse during political events and wants to verify the veracity of a fact-checked claim .
-  2. A social scientist wants to find out if a claim/statement has been fact-checked before.
-  3. A social scientist wants to find similar statements/claims that have been previously fact-checked      
 
 ## Repository Structure
 
