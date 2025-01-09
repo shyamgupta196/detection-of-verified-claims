@@ -5,7 +5,7 @@ This method facilitates fact-checking of arbitrary claims or statements (e.g. ta
 
 ClaimsKG is a structured knowledge base (KB) which serves as a registry of claims. The KB is updated at regular intervals. The latest release of ClaimsKG contains 74000 claims collected from 13 different fact-checking websites from the year 1996 to 2023. For more details regarding ClaimsKG, please refer to the official webpage https://data.gesis.org/claimskg/
 
-The method receives an input claim/sentence, computes similarity with 74000 previously fact-checked claims from ClaimsKG and returns a set of ranked claims, their relevance scores, veracity ratings and the corresponding fact-check sources. 
+The method receives an input claim/sentence (called "query"), computes similarity with 74000 previously fact-checked claims from ClaimsKG and returns a set of ranked claims, their relevance scores, veracity ratings and the corresponding fact-check sources. 
 
 ## Keywords
 verified claim retrieval, semantic similarity, detection of previously fact-checked claims
@@ -73,7 +73,25 @@ Afterwards, exit the interpreter:
 # How to Use
 Once everything is installed, you can run the SimBa project. To do so, use the following command in the terminal:
 
-      python main.py
+      python main.py <dataset name>
+
+
+dataset name: A custom name for your input query dataset. 
+This will use the ClaimsKG database to find fact-checked claims that are similar to your input queries.  
+
+For increased efficency, SimBA generates embeddings for the claims in each database only once and stores them in a cache for re-use. To use this cache, if it already exists, supply the -c option:
+
+      python main.py <dataset name> -c
+
+
+If you want to use a different database than ClaimsKG as corpus, run
+
+      python main.py <dataset name> <corpus name>
+    
+
+corpus name: A custom name for your database. \
+
+Again, you can use the -c option to use the cache, in case a cache for a database with the same corpus name already exists. Please make sure that when you use the cache, you did not generate it for a different database that you had given the same name!
 
 
 ## Repository Structure
@@ -110,7 +128,7 @@ It operates in two steps:
 In the first step, the semantically most similar claims are retrieved as candidates. Semantic similarity is computed using sentence embeddings. 
 In a second step, a computationally more costly re-ranking step is applied to all candidates in order to find the best matches. Again, sentence embeddings combined with a lexical feature are used. 
 
-SimBA was evaluated on the CLEF CheckThat! Lab ClaimLinking challenge data and achieved the following scores: 
+SimBA was evaluated on the [CLEF CheckThat! Lab Task 2 Claim Retrieval challenge](https://checkthat.gitlab.io/clef2022/) data and achieved the following scores: 
 
 | Datast  | Map@1 | Map@3     | Map@5 |  
 |---|---|-----------|---|
