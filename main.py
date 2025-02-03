@@ -2,33 +2,36 @@ import os
 import shutil
 import subprocess
 from pathlib import Path
+import argparse
 
 
-def run():
-    # Fixed dataset name
-    data_name = "clef2022"
-
+def run(dataset_name, database_name="claimsKG", use_cache=False):
     # Input query file for SimBa as independent repo
-    data_name_queries = "data/" + data_name + "/queries.tsv"
+    data_name_queries = f"data/{dataset_name}/queries.tsv"
 
     # Verified candidate claims file for SimBa as independent repo
-    data_name_targets = "data/" + data_name + "/corpus.tsv"
+    data_name_targets = f"data/{database_name}/corpus.tsv"
 
     # Path to this script's directory
     directory_path = os.path.dirname(__file__)
 
     # Run candidate retrieval
-    subprocess.call([
+    retrieval_command = [
         "python",
         os.path.join(directory_path, "src/candidate_retrieval/retrieval.py"),
         data_name_queries,
         data_name_targets,
-        data_name,
-        data_name,
+        dataset_name,
+        dataset_name,
         "braycurtis",
         "50",
         "-sentence_embedding_models", "all-mpnet-base-v2"
-    ])
+    ]
+
+    if use_cache:
+        retrieval_command.append("-c")
+
+    subprocess.call(retrieval_command)
 
     # Run re-ranking
     subprocess.call([
@@ -36,29 +39,29 @@ def run():
         os.path.join(directory_path, "src/re_ranking/re_ranking.py"),
         data_name_queries,
         data_name_targets,
-        data_name,
-        data_name,
+        dataset_name,
+        dataset_name,
         "braycurtis",
         "5",
-        "-sentence_embedding_models", 
-        "all-mpnet-base-v2", 
-        "sentence-transformers/sentence-t5-base", 
+        "-sentence_embedding_models",
+        "all-mpnet-base-v2",
+        "sentence-transformers/sentence-t5-base",
         "princeton-nlp/unsup-simcse-roberta-base",
         "-lexical_similarity_measures", "similar_words_ratio"
     ])
 
     # Gold qrel labels file for SimBa as independent repo
-    data_name_gold = "data/" + data_name + "/gold.tsv"
+    data_name_gold = f"data/{dataset_name}/gold.tsv"
 
-    # Evaluation
+    # Evaluation (optional, uncomment if needed)
     """
     Uncomment this block to evaluate the results if you have the evaluation script ready.
     
-    print("Evaluation Scores for dataset " + data_name)
+    print("Evaluation Scores for dataset " + dataset_name)
     subprocess.call([
         "python", os.path.join(directory_path, "evaluation/scorer/main.py"),
         data_name_gold,
-        "data/" + data_name + "/pred_qrels.tsv"
+        "data/" + dataset_name + "/pred_qrels.tsv"
     ])
     """
 
@@ -66,11 +69,26 @@ def run():
     Path("run0").mkdir(parents=True, exist_ok=True)
 
     # Copy the prediction file to the output directory
-    output_file = "data/" + data_name + "/pred_qrels.tsv"
-    new_file = "run0/" + data_name + ".tsv"
+    output_file = f"data/{dataset_name}/pred_qrels.tsv"
+    new_file = f"run0/{dataset_name}.tsv"
 
     shutil.copy(output_file, new_file)
 
 
 if __name__ == "__main__":
-    run()
+    parser = argparse.ArgumentParser(description="Run candidate retrieval and re-ranking for a specified dataset.")
+    parser.add_argument("dataset_name", help="The name of the dataset (folder in 'data') containing 'queries.tsv'.")
+    parser.add_argument(
+        "--database_name",
+        default="claimsKG",
+        help="The name of the database (folder in 'data') containing 'corpus.tsv'. Defaults to 'claimsKG'."
+    )
+    parser.add_argument(
+        "-c", "--use_cache",
+        action="store_true",
+        help="Use cache if it exists; otherwise, re-generate the cache. Defaults to re-generating."
+    )
+
+    args = parser.parse_args()
+
+    run(args.dataset_name, args.database_name, args.use_cache)
