@@ -151,6 +151,40 @@ def output_dict_to_pred_qrels(output_dictionary, output_data_name):
     df = df.reset_index(drop=True)
     df.to_csv(output_data_name, index=False, header=False, sep='\t')
 
+def output_dict_to_client_tsv(output_dictionary, output_data_name, filename, queries): 
+    d = create_dictionary_from_corpus(filename)
+    df = pd.DataFrame(columns=['query', 'vclaim', 'claimReviewURL', 'rating', 'similarity'])
+    list_of_text = []
+    list_of_url = []
+    list_of_scores = []
+    list_of_rating = []
+    list_of_qtext = []
+    for qid, ranked_targets in output_dictionary.items():
+        #list_of_qtext.append(get_qtext(qid))
+        #list_of_qtext.append(qid)
+        for target_id, sim_score in ranked_targets.items(): 
+            list_of_text.append(d.get(target_id).get("text"))
+            list_of_url.append(d.get(target_id).get("url"))
+            list_of_scores.append(sim_score)
+            list_of_rating.append(d.get(target_id).get("rating"))
+            list_of_qtext.append(queries.get(qid))
+    array_of_scores = np.array(list_of_scores)
+    df = df.reset_index(drop=True)
+    df['vclaim'] = pd.Series(list_of_text)
+    df['query'] = pd.Series(list_of_qtext)
+    df['similarity'] = pd.Series(array_of_scores).astype(float)
+    df['claimReviewURL'] = pd.Series(list_of_url)
+    df['rating'] = pd.Series(list_of_rating)
+    df = df.reset_index(drop=True)
+    df.to_csv(output_data_name, index=False, header=True, sep='\t')
+def create_dictionary_from_corpus(filename):
+    d = {}
+    with open(filename) as tsv_file:
+        reader = csv.reader(tsv_file, delimiter="\t")
+        for row in reader:
+            d[row[0]] = {"text" : row[1],"rating":row[4], "url": row[3]}
+    return d
+
 
 def supervised_output_to_pred_qrels(test_df, queries, k, output_data_name):
     df = pd.DataFrame(columns=['qid', 'Q0', 'docno', 'rank', 'score', 'tag'])

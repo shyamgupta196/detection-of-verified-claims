@@ -31,7 +31,7 @@ import create_feature_set
 
 from utils import get_queries, get_targets, all_targets_as_query_candidates, load_pickled_object, \
     decompress_file, get_candidate_targets, pickle_object, compress_file, supervised_output_to_pred_qrels, \
-    output_dict_to_pred_qrels
+    output_dict_to_pred_qrels, output_dict_to_client_tsv
 from sentence_encoder import encode_queries, encode_targets
 from referential_similarity import get_sequence_entities
 from string_similarity import get_string_similarity
@@ -121,6 +121,7 @@ def run():
     for query_id in list(queries.keys()):
         all_sim_scores[query_id] = []
     output_path = os.path.join(DATA_PATH, args.data, "pred_qrels.tsv")
+    output_path_client = os.path.join(DATA_PATH, args.data, "pred_client.tsv")
     Path(os.path.join(DATA_PATH, args.data)).mkdir(parents=True, exist_ok=True)
     """
     0. Learning
@@ -481,6 +482,7 @@ def run():
                     this_query.update(targets_and_sim_scores)
                 output[query_id] = this_query
                 output_dict_to_pred_qrels(output, output_path)
+                output_dict_to_client_tsv(output, output_path_client, args.targets, queries)
 
         else:
             for query_id, query_sim_scores in list(all_sim_scores.items()):
@@ -491,6 +493,7 @@ def run():
                 targets_and_sim_scores = {x: targets_and_sim_scores[x] for x in list(targets_and_sim_scores)[:args.k]}
                 output[query_id] = targets_and_sim_scores
                 output_dict_to_pred_qrels(output, output_path)
+                output_dict_to_client_tsv(output, output_path_client, args.targets, queries)
 
 
 if __name__ == "__main__":
