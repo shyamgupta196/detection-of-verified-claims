@@ -28,8 +28,11 @@ def run(dataset_name, database_name="claimsKG", use_cache=False):
         "-sentence_embedding_models", "all-mpnet-base-v2"
     ]
 
-    if use_cache:
-        retrieval_command.append("-c")
+    if not use_cache:
+        caching_directory = os.path.join("data", "cache", dataset_name)
+        if os.path.exists(caching_directory):
+            shutil.rmtree(caching_directory)
+       
 
     subprocess.call(retrieval_command)
 
