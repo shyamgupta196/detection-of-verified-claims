@@ -95,13 +95,39 @@ Again, you can use the -c option to use the cache, in case a cache for a databas
 
 
 ## Repository Structure
-...
 
-## Input Data
+## File Descriptions
+
+- **`main.py`**  
+  The primary script to execute the SimBa project. Acts as the entry point for running the pipeline.
+
+- **`queries.tsv`**  
+  A sample dataset in TSV format that contains input queries for testing the system.
+
+- **`corpus.tsv`**  
+  The default dataset (ClaimsKG corpus) containing the reference data for similarity computations.
+
+- **`sample.tsv`**  
+  The output file generated after running the similarity process. Contains similarity results for the input queries.
+
+- **`pred_client.tsv`**  
+  A client-friendly output file, providing detailed similarity results in an accessible format.
+
+- **`requirements.txt`**  
+  A list of Python dependencies required to run the project. Install them using:
+  
+
+
+
+## Input Data 
+
 
 ### Required
 The required input consists of an input query file ("queries.tsv"): 
-a text file in .tsv format (tab-separated) containing one claim per line. For each of the claims, SimBA will retrieve the most similar fact-checked claims in ClaimsKG. 
+a text file in .tsv format (tab-separated) containing one claim per line. For each of the claims, SimBA will retrieve the most similar fact-checked claims in ClaimsKG, For example:
+  ```
+  25603     Singer and actress Cher died in December 2022 or January 2023.
+  ``` 
 
 ### Optional
 If desired, different corpus than ClaimsKG can be supplied as database ("corpus.tsv"). 
@@ -109,14 +135,48 @@ If desired, different corpus than ClaimsKG can be supplied as database ("corpus.
 If available, a goldstandard can be supplied which lists the optimal results ("gold.tsv"). This can be used to evaluate SimBA's performance. 
 
 ## Sample Input
-...
+queries.tsv
+```
+25603|tSinger and actress Cher died in December 2022 or January 2023.
+```
+
 
 ## Output Data
-...
+The outputs are exported to two files:
+
+1. **Standard Output File**: `sample.tsv`
+   - Contains technical results in a tab-separated format with the following columns:
+     ```
+     Query ID     Q0    Claim ID    Rank  Similarity Score  Method Name
+     ```
+     Example:
+     ```
+     25603        Q0    59543 1     31.600123964723423      SimBa
+     ```
+
+2. **Client-Friendly Output File**: `pred_client.tsv`
+   - Contains a more readable format with the following columns:
+     - Query
+     - Verified Claim (vclaim)
+     - Claim Review URL
+     - Rating (True/False/Other)
+     - Similarity Score
+
+## Example Output (`pred_client.tsv`)
+
+| Query                                                      | VClaim                                                    | ClaimReviewURL                                     | Rating | Similarity       |
+|------------------------------------------------------------|-----------------------------------------------------------|---------------------------------------------------|--------|------------------|
+| Singer and actress Cher died in December 2022 or January 2023. | Singer and actress Cher died in December 2022 or January 2023. | [Link](https://www.snopes.com/fact-check/cher-death-hoax/) | false  | 72.06526780919123 |
+---
+    
+
 
 ## Sample Output
-...
+The outputs capture key details of similarity analysis between the input query and claims from the dataset.
 
+
+
+---
 ## Architecture
 
 SimBA is fully unsupervised, i.e. it does not need any training data. 
