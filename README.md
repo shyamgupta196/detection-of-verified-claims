@@ -95,26 +95,46 @@ Again, you can use the -c option to use the cache, in case a cache for a databas
 
 
 ## Repository Structure
-
+                                                                        
 ## File Descriptions
 
-- **`main.py`**  
+## Repository Structure
+
+### Data Locations
+- **Input Data**: Place your query file in `claimlinking_simba/data/sample/queries.tsv`.
+- **Cache Files**: Cache files are stored in `claimlinking_simba/data/cache/sample`.
+- **ClaimsKG Corpus**: The default ClaimsKG corpus is located at `claimlinking_simba/data/claimsKG/corpus.tsv`.
+- **Output Data**:
+  - Standard output files: `claimlinking_simba/data/sample/pred_client.tsv`, `claimlinking_simba/data/sample/pred_qrels.tsv`.
+  - Alternative location: `claimlinking_simba/run0/sample.tsv` (contains the same output as `pred_qrels.tsv`).
+
+### Scripts
+- **Main Script**: The entry point is `main.py`, located at the root.
+- **Additional Scripts**: The core logic resides in the `src/` directory.
+
+---
+## File Descriptions
+
+- **main.py**  
   The primary script to execute the SimBa project. Acts as the entry point for running the pipeline.
 
-- **`queries.tsv`**  
+- **queries.tsv**  
   A sample dataset in TSV format that contains input queries for testing the system.
 
-- **`corpus.tsv`**  
+- **corpus.tsv**  
   The default dataset (ClaimsKG corpus) containing the reference data for similarity computations.
 
-- **`sample.tsv`**  
+- **sample.tsv** or  **pred_qrels.tsv**
   The output file generated after running the similarity process. Contains similarity results for the input queries.
 
-- **`pred_client.tsv`**  
+- **pred_client.tsv**  
   A client-friendly output file, providing detailed similarity results in an accessible format.
 
-- **`requirements.txt`**  
+- **requirements.txt**  
   A list of Python dependencies required to run the project. Install them using:
+  
+---
+
   
 
 
@@ -137,7 +157,7 @@ If available, a goldstandard can be supplied which lists the optimal results ("g
 ## Sample Input
 queries.tsv
 ```
-25603|tSinger and actress Cher died in December 2022 or January 2023.
+25603      Singer and actress Cher died in December 2022 or January 2023.
 ```
 
 
@@ -162,21 +182,23 @@ The outputs are exported to two files:
      - Rating (True/False/Other)
      - Similarity Score
 
-## Example Output (`pred_client.tsv`)
+## Sample Output (`pred_client.tsv`)
 
-| Query                                                      | VClaim                                                    | ClaimReviewURL                                     | Rating | Similarity       |
-|------------------------------------------------------------|-----------------------------------------------------------|---------------------------------------------------|--------|------------------|
-| Singer and actress Cher died in December 2022 or January 2023. | Singer and actress Cher died in December 2022 or January 2023. | [Link](https://www.snopes.com/fact-check/cher-death-hoax/) | false  | 72.06526780919123 |
----
+The following table shows an example of the output:
+
+| Query                                                      | VClaim                                                    | ClaimReviewURL                                              | Rating           | Similarity       |
+|------------------------------------------------------------|-----------------------------------------------------------|------------------------------------------------------------|------------------|------------------|
+| Singer and actress Cher died in December 2022 or January 2023. | Singer and actress Cher died in December 2022 or January 2023. | [Link](https://www.snopes.com/fact-check/cher-death-hoax/)  | false            | 72.06526780919123 |
+| Singer and actress Cher died in December 2022 or January 2023. | Chevy Chase died of a heart attack on 4 January 2016.      | [Link](https://www.snopes.com/fact-check/chevy-chase-death-hoax/) | false            | 39.27806597312666 |
+| Singer and actress Cher died in December 2022 or January 2023. | Musicians Robert Plant and Cher plan to wed at Westminster Abbey in July 2016. | [Link](https://www.snopes.com/fact-check/cher-plant-marriage-plans/) | false            | 36.72969772403427 |
+| Singer and actress Cher died in December 2022 or January 2023. | Video shows microburst over Karachi in July 2022           | [Link](https://factcheck.afp.com/doc.afp.com.32EN4W3)      | false            | 31.600123964723423 |
+| Singer and actress Cher died in December 2022 or January 2023. | Hillary Clinton admitted she had an urge to run again in January 2020. | [Link](https://www.truthorfiction.com/did-hillary-clinton-say-she-had-an-urge-to-run-again-in-january-2020/) | decontextualized | 31.38685337133225 |
+
+--- 
     
 
 
-## Sample Output
-The outputs capture key details of similarity analysis between the input query and claims from the dataset.
 
-
-
----
 ## Architecture
 
 SimBA is fully unsupervised, i.e. it does not need any training data. 
