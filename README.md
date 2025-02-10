@@ -94,9 +94,7 @@ corpus name: A custom name for your database. \
 Again, you can use the -c option to use the cache, in case a cache for a database with the same corpus name already exists. Please make sure that when you use the cache, you did not generate it for a different database that you had given the same name!
 
 
-## Repository Structure
-                                                                        
-## File Descriptions
+
 
 ## Repository Structure
 
@@ -188,11 +186,11 @@ The following table shows an example of the output:
 
 | Query                                                      | VClaim                                                    | ClaimReviewURL                                              | Rating           | Similarity       |
 |------------------------------------------------------------|-----------------------------------------------------------|------------------------------------------------------------|------------------|------------------|
-| Singer and actress Cher died in December 2022 or January 2023. | Singer and actress Cher died in December 2022 or January 2023. | [Link](https://www.snopes.com/fact-check/cher-death-hoax/)  | false            | 72.06526780919123 |
-| Singer and actress Cher died in December 2022 or January 2023. | Chevy Chase died of a heart attack on 4 January 2016.      | [Link](https://www.snopes.com/fact-check/chevy-chase-death-hoax/) | false            | 39.27806597312666 |
-| Singer and actress Cher died in December 2022 or January 2023. | Musicians Robert Plant and Cher plan to wed at Westminster Abbey in July 2016. | [Link](https://www.snopes.com/fact-check/cher-plant-marriage-plans/) | false            | 36.72969772403427 |
-| Singer and actress Cher died in December 2022 or January 2023. | Video shows microburst over Karachi in July 2022           | [Link](https://factcheck.afp.com/doc.afp.com.32EN4W3)      | false            | 31.600123964723423 |
-| Singer and actress Cher died in December 2022 or January 2023. | Hillary Clinton admitted she had an urge to run again in January 2020. | [Link](https://www.truthorfiction.com/did-hillary-clinton-say-she-had-an-urge-to-run-again-in-january-2020/) | decontextualized | 31.38685337133225 |
+| Singer and actress Cher died in December 2022 or January 2023. | Singer and actress Cher died in December 2022 or January 2023. | https://www.snopes.com/fact-check/cher-death-hoax | false            | 72.06526780919123 |
+| Singer and actress Cher died in December 2022 or January 2023. | Chevy Chase died of a heart attack on 4 January 2016.      | https://www.snopes.com/fact-check/chevy-chase-death-hoax | false            | 39.27806597312666 |
+| Singer and actress Cher died in December 2022 or January 2023. | Musicians Robert Plant and Cher plan to wed at Westminster Abbey in July 2016. | https://www.snopes.com/fact-check/cher-plant-marriage-plans | false            | 36.72969772403427 |
+| Singer and actress Cher died in December 2022 or January 2023. | Video shows microburst over Karachi in July 2022           | https://factcheck.afp.com/doc.afp.com.32EN4W3      | false            | 31.600123964723423 |
+| Singer and actress Cher died in December 2022 or January 2023. | Hillary Clinton admitted she had an urge to run again in January 2020. | https://www.truthorfiction.com/did-hillary-clinton-say-she-had-an-urge-to-run-again-in-january-2020 | decontextualized | 31.38685337133225 |
 
 --- 
     
