@@ -148,7 +148,16 @@ a text file in .tsv format (tab-separated) containing one query per line. One qu
   ``` 
 
 ### Optional
-If desired, a different corpus than ClaimsKG can be supplied as database ("corpus.tsv"). 
+This file should be in tab-separated format (`.tsv`) and must follow the structure below:  
+
+### Format of `corpus.tsv`  
+The file should contain the following columns:  
+
+- **Claim ID** – A unique identifier for the claim.  
+- **Claim Text** – The textual content of the claim.  
+- **Claim Review Title** – The title of the fact-checking review.  
+- **Claim Review URL** – A link to the fact-checking article.  
+- **Rating** – The fact-checking assessment of the claim (e.g., true, false, half false, etc.).
 
 If available, a goldstandard can be supplied which lists the optimal results ("gold.tsv"). This can be used to evaluate SimBA's performance using the evaluation scripts of the [CLEF CheckThat! Lab Task 2 Claim Retrieval challenge](https://checkthat.gitlab.io/clef2022/).
 
