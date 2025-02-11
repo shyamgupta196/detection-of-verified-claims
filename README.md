@@ -148,6 +148,8 @@ a text file in .tsv format (tab-separated) containing one query per line. One qu
   ``` 
 
 ### Optional
+If desired, a different corpus than ClaimsKG can be supplied as database ("corpus.tsv").
+ 
 This file should be in tab-separated format (`.tsv`) and must follow the structure below:  
 
 ### Format of `corpus.tsv`  
