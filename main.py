@@ -68,15 +68,6 @@ def run(dataset_name, database_name="claimsKG", use_cache=False):
     ])
     """
 
-    # Ensure output directory exists
-    Path("run0").mkdir(parents=True, exist_ok=True)
-
-    # Copy the prediction file to the output directory
-    output_file = f"data/{dataset_name}/pred_qrels.tsv"
-    new_file = f"run0/{dataset_name}.tsv"
-
-    shutil.copy(output_file, new_file)
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run candidate retrieval and re-ranking for a specified dataset.")
