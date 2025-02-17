@@ -142,10 +142,7 @@ Again, you can use the -c option to use the cache, in case a cache for a databas
 
 ### Required
 The required input consists of an input query file ("queries.tsv"): 
-a text file in .tsv format (tab-separated) containing one query per line. One query consists of an ID and a claim. For each of the claims, SimBA will retrieve the most similar fact-checked claims in ClaimsKG, For example:
-  ```
-  25603     Singer and actress Cher died in December 2022 or January 2023.
-  ``` 
+a text file in .tsv format (tab-separated) containing one query per line. One query consists of an ID and a claim. For each of the claims, SimBA will retrieve the most similar fact-checked claims in ClaimsKG.
 
 ### Optional
 If desired, a different corpus than ClaimsKG can be supplied as database ("corpus.tsv").
