@@ -1,8 +1,8 @@
-name: Test Content for Methods Hub
+name: Content for Methods Hub
 on:
   push:
     branches:
-      - master
+      - main
 jobs:
   test-methods-hub-render:
     runs-on: ubuntu-24.04
