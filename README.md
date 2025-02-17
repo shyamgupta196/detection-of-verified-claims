@@ -1,5 +1,5 @@
 
-# SimBa
+# Lexical and Semantic Similarity Based Detection of Verified Claims (SimBa)
 
 This method receives an input claim/sentence (called "query"), searches a registry of fact-checked claims and returns fact-checks for similar claims. 
 More precisely, SimBa computes the queries' similarity with 74000 previously fact-checked claims from ClaimsKG and returns a set of ranked claims, their relevance scores, veracity ratings and the corresponding fact-check sources. 
@@ -80,7 +80,7 @@ Once everything is installed, you can run the SimBa project. To do so, use the f
 dataset name: A custom name for your input query dataset. 
 This will use the ClaimsKG database to find fact-checked claims that are similar to your input queries.  
 
-For increased efficency, SimBA generates embeddings for the claims in each database only once and stores them in a cache for re-use. To use this cache, if it already exists, supply the -c option:
+For increased efficency, SimBa generates embeddings for the claims in each database only once and stores them in a cache for re-use. To use this cache, if it already exists, supply the -c option:
 
       python main.py <dataset name> -c
 
@@ -142,7 +142,7 @@ Again, you can use the -c option to use the cache, in case a cache for a databas
 
 ### Required
 The required input consists of an input query file ("queries.tsv"): 
-a text file in .tsv format (tab-separated) containing one query per line. One query consists of an ID and a claim. For each of the claims, SimBA will retrieve the most similar fact-checked claims in ClaimsKG.
+a text file in .tsv format (tab-separated) containing one query per line. One query consists of an ID and a claim. For each of the claims, SimBa will retrieve the most similar fact-checked claims in ClaimsKG.
 
 ### Optional
 If desired, a different corpus than ClaimsKG can be supplied as database ("corpus.tsv").
@@ -158,7 +158,7 @@ The file should contain the following columns:
 - **Claim Review URL** – A link to the fact-checking article.  
 - **Rating** – The fact-checking assessment of the claim (e.g., true, false, half false, etc.).
 
-If available, a goldstandard can be supplied which lists the optimal results ("gold.tsv"). This can be used to evaluate SimBA's performance using the evaluation scripts of the [CLEF CheckThat! Lab Task 2 Claim Retrieval challenge](https://checkthat.gitlab.io/clef2022/).
+If available, a goldstandard can be supplied which lists the optimal results ("gold.tsv"). This can be used to evaluate SimBa's performance using the evaluation scripts of the [CLEF CheckThat! Lab Task 2 Claim Retrieval challenge](https://checkthat.gitlab.io/clef2022/).
 
 ## Sample Input
 queries.tsv
@@ -207,7 +207,7 @@ The following table shows an example of the output:
 
 ## Architecture
 
-SimBA is fully unsupervised, i.e. it does not need any training data. 
+SimBa is fully unsupervised, i.e. it does not need any training data. 
 It operates in two steps:
 
 1. Candidate Retrieval
@@ -216,7 +216,7 @@ It operates in two steps:
 In the first step, the semantically most similar claims are retrieved as candidates. Semantic similarity is computed using sentence embeddings. 
 In a second step, a computationally more costly re-ranking step is applied to all candidates in order to find the best matches. Again, sentence embeddings combined with a lexical feature are used. 
 
-SimBA was evaluated on the [CLEF CheckThat! Lab Task 2 Claim Retrieval challenge](https://checkthat.gitlab.io/clef2022/) data and achieved the following scores: 
+SimBa was evaluated on the [CLEF CheckThat! Lab Task 2 Claim Retrieval challenge](https://checkthat.gitlab.io/clef2022/) data and achieved the following scores: 
 
 | Datast  | Map@1 | Map@3     | Map@5 |  
 |---|---|-----------|---|
