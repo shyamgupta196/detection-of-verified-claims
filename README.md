@@ -67,7 +67,7 @@ then use nltk's download method:
 ```
 Afterwards, exit the interpreter:
 ```
-    exit()
+exit()
 ```
 
 
@@ -111,6 +111,7 @@ Again, you can use the -c option to use the cache, in case a cache for a databas
 - **Additional Scripts**: The core logic resides in the `src/` directory.
 
 ---
+
 ## File Descriptions
 
 - **main.py**  
