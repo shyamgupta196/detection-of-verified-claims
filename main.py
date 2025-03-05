@@ -71,7 +71,7 @@ def run(dataset_name, database_name="claimsKG", use_cache=False):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run candidate retrieval and re-ranking for a specified dataset.")
-    parser.add_argument("dataset_name", help="The name of the dataset (folder in 'data') containing 'queries.tsv'.")
+    parser.add_argument("dataset_name", default="sample", help="The name of the dataset (folder in 'data') containing 'queries.tsv'.")
     parser.add_argument(
         "--database_name",
         default="claimsKG",
