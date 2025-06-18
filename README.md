@@ -19,14 +19,14 @@ verified claim retrieval, semantic similarity, detection of previously fact-chec
 
 # SimBa Project Installation and Setup Guide
 
-This version of SimBa has been tested with **Python 3.11.6** on Windows. Using other Python versions and/or operating systems might require other package versions. 
+This version of SimBa has been tested with **Python 3.11.13** on Windows. Using other Python versions and/or operating systems might require other package versions. 
 
 Follow the steps below to install SimBa on your system using the recommended setup. 
 
-## 1. **Install Python (Version 3.11.6)**
+## 1. **Install Python (Version 3.11.13)**
 
-1. **Download Python 3.11.6** from the official Python website:  
-   [https://www.python.org/downloads/release/python-3116/](https://www.python.org/downloads/release/python-3116/).
+1. **Download Python 3.11.13** from the official Python website:  
+   [https://www.python.org/downloads/release/python-3116/](https://www.python.org/downloads/release/python-31113/).
 
 2. **Install Python**:
    - **During installation**, make sure to **check the box** that says **"Add Python to PATH"**. This step is crucial, as it ensures that Python and pip (Python's package manager) are available in your terminal or command prompt.
