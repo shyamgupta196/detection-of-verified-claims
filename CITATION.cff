@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+title: Lexical and Semantic Similarity Based Detection of Verified Claims (SimBa)
+message: >
+  This method is based on the SimBA method as described in the following papers:
+
+Hövelmeyer, Alica, Katarina Boland, and Stefan Dietze. 2022. "SimBa at CheckThat! 2022: Lexical and Semantic Similarity-Based Detection of Verified Claims in an Unsupervised and Supervised Way." In CLEF Working Notes 2022, Proceedings of the Working Notes of CLEF 2022- Conference and Labs of the Evaluation Forum, edited by Guglielmo Faggioli, Nicola Ferro, Allan Hanbury, and Martin Potthast, CEUR Workshop Proceedings 3180, 511-531. Aachen: RWTH Aachen. https://ceur-ws.org/Vol-3180/paper-40.pdf.
+Boland, Katarina, Hövelmeyer, Alica, Fafalios, Pavlos, Todorov, Konstantin, Mazhar, Usama, & Dietze, Stefan (2023). Robust and efficient claim retrieval for online fact-checking applications. Pre-print. https://doi.org/10.21203/rs.3.rs-3007151/v1
+ 
+If you use this repository or build upon it, please cite it as follows.
+
+type: software
+authors:
+  - name: Alica Hövelmeyer
+    email: alica.hoevelmeyer@live.de
+ - name: Katarina Boland
+    email: katarina.boland@hhu.de
+ - name: Ali El Boukili
+   email: ali.elboukili@gesis.org
+  - name: Stefan Dietze
+   email: stefan.dietze@gesis.org
+repository-code: https://github.com/BDA-KTS/detection-of-verified-claims
+license: Apache License, Version 2.0, January 2004, http://www.apache.org/licenses/
