@@ -26,7 +26,7 @@ Follow the steps below to install SimBa on your system using the recommended set
 ## 1. **Install Python (Version 3.11.13)**
 
 1. **Download Python 3.11.13** from the official Python website:  
-   [https://www.python.org/downloads/release/python-3116/](https://www.python.org/downloads/release/python-31113/).
+   [https://www.python.org/downloads/release/python-31113/](https://www.python.org/downloads/release/python-31113/).
 
 2. **Install Python**:
    - **During installation**, make sure to **check the box** that says **"Add Python to PATH"**. This step is crucial, as it ensures that Python and pip (Python's package manager) are available in your terminal or command prompt.
