@@ -179,9 +179,6 @@ SimBa was evaluated on the [CLEF CheckThat! Lab Task 2 Claim Retrieval challenge
 
 Hövelmeyer, Alica, Katarina Boland, and Stefan Dietze. 2022. "SimBa at CheckThat! 2022: Lexical and Semantic Similarity-Based Detection of Verified Claims in an Unsupervised and Supervised Way." In CLEF Working Notes 2022, Proceedings of the Working Notes of CLEF 2022- Conference and Labs of the Evaluation Forum, edited by Guglielmo Faggioli, Nicola Ferro, Allan Hanbury, and Martin Potthast, CEUR Workshop Proceedings 3180, 511-531. Aachen: RWTH Aachen. https://ceur-ws.org/Vol-3180/paper-40.pdf. 
 
-Boland, Katarina, Hövelmeyer, Alica, Fafalios, Pavlos, Todorov, Konstantin, Mazhar, Usama, & Dietze, Stefan (2023). Robust and efficient claim retrieval for online fact-checking applications. Pre-print. https://doi.org/10.21203/rs.3.rs-3007151/v1
-
-
 ## Contact Details
 For further assistance or inquiries, please contact: katarina.boland@hhu.de
 
