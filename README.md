@@ -73,7 +73,6 @@ The following table shows an example of the output:
 | Singer and actress Cher died in December 2022 or January 2023. | Video shows microburst over Karachi in July 2022           | https://factcheck.afp.com/doc.afp.com.32EN4W3      | false            | 31.600123964723423 |
 | Singer and actress Cher died in December 2022 or January 2023. | Hillary Clinton admitted she had an urge to run again in January 2020. | https://www.truthorfiction.com/did-hillary-clinton-say-she-had-an-urge-to-run-again-in-january-2020 | decontextualized | 31.38685337133225 |
 
---- 
     
 ## Hardware Requirements
 The method runs on a cheap virtual machine provided by cloud computing company (2 x86 CPU core, 4 GB RAM, 40GB HDD).
