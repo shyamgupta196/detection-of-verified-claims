@@ -37,7 +37,7 @@ If available, a goldstandard can be supplied which lists the optimal results ("g
 
 queries.tsv
 ```
-25603      Singer and actress Cher died in December 2022 or January 2023.
+1	"Dog-owners face 78% higher risk of catching Covid-19"
 ```
 
 ## Output Data
@@ -67,11 +67,11 @@ The following table shows an example of the output:
 
 | Query                                                      | VClaim                                                    | ClaimReviewURL                                              | Rating           | Similarity       |
 |------------------------------------------------------------|-----------------------------------------------------------|------------------------------------------------------------|------------------|------------------|
-| Singer and actress Cher died in December 2022 or January 2023. | Singer and actress Cher died in December 2022 or January 2023. | https://www.snopes.com/fact-check/cher-death-hoax | false            | 72.06526780919123 |
-| Singer and actress Cher died in December 2022 or January 2023. | Chevy Chase died of a heart attack on 4 January 2016.      | https://www.snopes.com/fact-check/chevy-chase-death-hoax | false            | 39.27806597312666 |
-| Singer and actress Cher died in December 2022 or January 2023. | Musicians Robert Plant and Cher plan to wed at Westminster Abbey in July 2016. | https://www.snopes.com/fact-check/cher-plant-marriage-plans | false            | 36.72969772403427 |
-| Singer and actress Cher died in December 2022 or January 2023. | Video shows microburst over Karachi in July 2022           | https://factcheck.afp.com/doc.afp.com.32EN4W3      | false            | 31.600123964723423 |
-| Singer and actress Cher died in December 2022 or January 2023. | Hillary Clinton admitted she had an urge to run again in January 2020. | https://www.truthorfiction.com/did-hillary-clinton-say-she-had-an-urge-to-run-again-in-january-2020 | decontextualized | 31.38685337133225 |
+| Dog-owners face 78% higher risk of catching Covid-19 | Getting the first dose of Covid-19 vaccine increases risk of catching the novel coronavirus | https://factcheck.afp.com/misleading-facebook-posts-claim-covid-19-vaccine-increases-risk-catching-novel-coronavirus | b'Misleading'            | 45.55524233523532 |
+| Dog-owners face 78% higher risk of catching Covid-19 | People vaccinated against Covid-19 pose a health risk to others by shedding spike proteins      | https://factcheck.afp.com/covid-19-vaccine-does-not-make-people-dangerous-others | b'False'            | 43.15199331134423 |
+| Dog-owners face 78% higher risk of catching Covid-19 | Vaccinated people are 885% more likely to die of Covid-19 than unvaccinated people | https://factcheck.afp.com/http%253A%252F%252Fdoc.afp.com%252F9JE74M-2 | b'False'            | 42.53184410315937 |
+| Dog-owners face 78% higher risk of catching Covid-19 | In the United Kingdom, 70-plus percent of the people who die now from COVID are fully vaccinated.           | https://www.politifact.com/factchecks/2021/oct/29/alex-berenson/covid-19-death-rate-england-much-higher-among-unva/      | FALSE            | 42.506568861739346 |
+| Dog-owners face 78% higher risk of catching Covid-19 | Only the fully vaccinated should fear the new ‘worst ever’ Covid-19 variant; data shows they already account for 4 in every 5 Covid deaths | https://www.politifact.com/factchecks/2021/dec/07/blog-posting/article-misleads-dangers-omicron-variant-using-uk-/| FALSE | 42.1289266007539 |
 
 --- 
     
