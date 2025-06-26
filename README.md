@@ -76,7 +76,7 @@ The following table shows an example of the output:
 --- 
     
 ## Hardware Requirements
-The method runs on a cheap virtual machine provided by cloud computing company (2 x86 CPU core, 4 GB RAM, 40GB HDD).
+The method has modest hardware requirements, e.g. it runs on a virtual machine with 2 x86 CPU cores, 4 GB RAM and a 40GB HDD.
 
 ## Environment Setup
 This version of SimBa has been tested with **Python 3.11.13** on Windows. Using other Python versions and/or operating systems might require other package versions. 
