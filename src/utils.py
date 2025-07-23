@@ -178,12 +178,11 @@ def output_dict_to_client_tsv(output_dictionary, output_data_name, filename, que
     df = df.reset_index(drop=True)
     df.to_csv(output_data_name, index=False, header=True, sep='\t')
 def create_dictionary_from_corpus(filename):
-    d = {}
-    with open(filename) as tsv_file:
-        reader = csv.reader(tsv_file, delimiter="\t")
-        for row in reader:
-            d[row[0]] = {"text" : row[1],"rating":row[4], "url": row[3]}
-    return d
+	d = {}
+	df = pd.read_csv(filename, sep='\t', dtype=str)
+	df = df.rename(columns={'ID': 'qid'})
+	d = dict(zip(df['qid'], df.drop('qid', axis=1).apply(dict, axis=1)))
+	return d
 
 
 def supervised_output_to_pred_qrels(test_df, queries, k, output_data_name):

@@ -3,7 +3,7 @@
 
 ## Description
 This method receives an input claim/sentence (called "query"), searches a registry of fact-checked claims and returns fact-checks for similar claims. 
-More precisely, SimBa computes the queries' similarity with 74000 previously fact-checked claims from ClaimsKG and returns a set of ranked claims, their relevance scores, veracity ratings and the corresponding fact-check sources. 
+More precisely, SimBa computes the queries' similarity with ~40.000 english fact-checked claims from ClaimsKG and returns a set of ranked claims, their relevance scores, veracity ratings and the corresponding fact-check sources. 
 
 This method facilitates fact-checking of arbitrary claims or statements (e.g. taken from online discourse and social media posts). It takes advantage of a unique and constantly updated repository of fact-checked claims mined from the web (ClaimsKG).
 
@@ -37,7 +37,7 @@ If available, a goldstandard can be supplied which lists the optimal results ("g
 
 queries.tsv
 ```
-25603      Singer and actress Cher died in December 2022 or January 2023.
+1	"Dog-owners face 78% higher risk of catching Covid-19"
 ```
 
 ## Output Data
@@ -67,15 +67,15 @@ The following table shows an example of the output:
 
 | Query                                                      | VClaim                                                    | ClaimReviewURL                                              | Rating           | Similarity       |
 |------------------------------------------------------------|-----------------------------------------------------------|------------------------------------------------------------|------------------|------------------|
-| Singer and actress Cher died in December 2022 or January 2023. | Singer and actress Cher died in December 2022 or January 2023. | https://www.snopes.com/fact-check/cher-death-hoax | false            | 72.06526780919123 |
-| Singer and actress Cher died in December 2022 or January 2023. | Chevy Chase died of a heart attack on 4 January 2016.      | https://www.snopes.com/fact-check/chevy-chase-death-hoax | false            | 39.27806597312666 |
-| Singer and actress Cher died in December 2022 or January 2023. | Musicians Robert Plant and Cher plan to wed at Westminster Abbey in July 2016. | https://www.snopes.com/fact-check/cher-plant-marriage-plans | false            | 36.72969772403427 |
-| Singer and actress Cher died in December 2022 or January 2023. | Video shows microburst over Karachi in July 2022           | https://factcheck.afp.com/doc.afp.com.32EN4W3      | false            | 31.600123964723423 |
-| Singer and actress Cher died in December 2022 or January 2023. | Hillary Clinton admitted she had an urge to run again in January 2020. | https://www.truthorfiction.com/did-hillary-clinton-say-she-had-an-urge-to-run-again-in-january-2020 | decontextualized | 31.38685337133225 |
+| Dog-owners face 78% higher risk of catching Covid-19 | Getting the first dose of Covid-19 vaccine increases risk of catching the novel coronavirus | https://factcheck.afp.com/misleading-facebook-posts-claim-covid-19-vaccine-increases-risk-catching-novel-coronavirus | b'Misleading'            | 45.55524233523532 |
+| Dog-owners face 78% higher risk of catching Covid-19 | People vaccinated against Covid-19 pose a health risk to others by shedding spike proteins      | https://factcheck.afp.com/covid-19-vaccine-does-not-make-people-dangerous-others | b'False'            | 43.15199331134423 |
+| Dog-owners face 78% higher risk of catching Covid-19 | Vaccinated people are 885% more likely to die of Covid-19 than unvaccinated people | https://factcheck.afp.com/http%253A%252F%252Fdoc.afp.com%252F9JE74M-2 | b'False'            | 42.53184410315937 |
+| Dog-owners face 78% higher risk of catching Covid-19 | In the United Kingdom, 70-plus percent of the people who die now from COVID are fully vaccinated.           | https://www.politifact.com/factchecks/2021/oct/29/alex-berenson/covid-19-death-rate-england-much-higher-among-unva/      | FALSE            | 42.506568861739346 |
+| Dog-owners face 78% higher risk of catching Covid-19 | Only the fully vaccinated should fear the new ‘worst ever’ Covid-19 variant; data shows they already account for 4 in every 5 Covid deaths | https://www.politifact.com/factchecks/2021/dec/07/blog-posting/article-misleads-dangers-omicron-variant-using-uk-/| FALSE | 42.1289266007539 |
 
     
 ## Hardware Requirements
-The method runs on a cheap virtual machine provided by cloud computing company (2 x86 CPU core, 4 GB RAM, 40GB HDD).
+The method has modest hardware requirements, e.g. it runs on a virtual machine with 2 x86 CPU cores, 4 GB RAM and a 40GB HDD.
 
 ## Environment Setup
 This version of SimBa has been tested with **Python 3.11.13** on Windows. Using other Python versions and/or operating systems might require other package versions. 
@@ -176,7 +176,9 @@ SimBa was evaluated on the [CLEF CheckThat! Lab Task 2 Claim Retrieval challenge
 
 ## References 
 
-Hövelmeyer, Alica, Katarina Boland, and Stefan Dietze. 2022. "SimBa at CheckThat! 2022: Lexical and Semantic Similarity-Based Detection of Verified Claims in an Unsupervised and Supervised Way." In CLEF Working Notes 2022, Proceedings of the Working Notes of CLEF 2022- Conference and Labs of the Evaluation Forum, edited by Guglielmo Faggioli, Nicola Ferro, Allan Hanbury, and Martin Potthast, CEUR Workshop Proceedings 3180, 511-531. Aachen: RWTH Aachen. https://ceur-ws.org/Vol-3180/paper-40.pdf. 
+- Hövelmeyer, Alica, Katarina Boland, and Stefan Dietze. 2022. *SimBa at CheckThat! 2022: Lexical and Semantic Similarity-Based Detection of Verified Claims in an Unsupervised and Supervised Way.* In: CEUR Workshop Proceedings, Vol. 3180, pp. 511–531. [PDF](https://ceur-ws.org/Vol-3180/paper-40.pdf)
+
+- Boland, Katarina, Hövelmeyer, Alica, Fafalios, Pavlos, Todorov, Konstantin, Mazhar, Usama, & Dietze, Stefan. 2023. *Robust and Efficient Claim Retrieval for Online Fact-Checking Applications.* Preprint. [DOI](https://doi.org/10.21203/rs.3.rs-3007151/v1)
 
 ## Contact Details
 For further assistance or inquiries, please contact: katarina.boland@hhu.de
