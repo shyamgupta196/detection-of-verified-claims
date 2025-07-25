@@ -22,7 +22,7 @@ Optional input data: If desired, a different corpus than ClaimsKG can be supplie
 
 This file should be in tab-separated format (`.tsv`) and must follow the structure below:
 
-Format of `corpus.tsv`
+Format of [`corpus.tsv`](data/claimsKG/corpus.tsv)
 
 The file should contain the following columns:
 
@@ -56,7 +56,7 @@ The outputs are exported to two files:
         ```         
         25603        Q0    59543 1     31.600123964723423      SimBa
         ```
-2.  **Client-Friendly Output File**: `pred_client.tsv`
+2.  **Client-Friendly Output File**: [`pred_client.tsv`](data/sample/pred_client.tsv)
     -   Contains a more readable format with the following columns:
         -   Query
         -   Verified Claim (vclaim)
@@ -64,12 +64,12 @@ The outputs are exported to two files:
         -   Rating (True/False/Other)
         -   Similarity Score
 
-Output file (`pred_client.tsv`)
+Output file ([`pred_client.tsv`](data/sample/pred_client.tsv))
 
 The following table shows an example of the output:
 
 | Query | VClaim | ClaimReviewURL | Rating | Similarity |
-|---------------|---------------|---------------|--------------|--------------|
+|---------------|---------------|---------------|---------------|---------------|
 | Dog-owners face 78% higher risk of catching Covid-19 | Getting the first dose of Covid-19 vaccine increases risk of catching the novel coronavirus | https://factcheck.afp.com/misleading-facebook-posts-claim-covid-19-vaccine-increases-risk-catching-novel-coronavirus | b'Misleading' | 45.55524233523532 |
 | Dog-owners face 78% higher risk of catching Covid-19 | People vaccinated against Covid-19 pose a health risk to others by shedding spike proteins | https://factcheck.afp.com/covid-19-vaccine-does-not-make-people-dangerous-others | b'False' | 43.15199331134423 |
 | Dog-owners face 78% higher risk of catching Covid-19 | Vaccinated people are 885% more likely to die of Covid-19 than unvaccinated people | https://factcheck.afp.com/http%253A%252F%252Fdoc.afp.com%252F9JE74M-2 | b'False' | 42.53184410315937 |
@@ -80,7 +80,12 @@ The following table shows an example of the output:
 
 ## Hardware Requirements
 
-The method has modest hardware requirements, e.g. it runs on a virtual machine with 2 x86 CPU cores, 4 GB RAM and a 40GB HDD.
+The method requires higher hardware specifications for optimal performance. Below is the recommended machine configuration:
+
+-   **CPU**: 8-core x86 CPU (e.g., Intel Core i7/i9 or AMD Ryzen 7/9)
+-   **GPU**: NVIDIA GPU with at least 4GB VRAM (e.g., NVIDIA RTX 2000 or higher. Not compulsary but important for faster operations)
+-   **RAM**: 8 GB or more
+-   **Storage**: 256 GB SSD (for faster read/write operations) + 256 GB HDD (for additional storage)
 
 ## Environment Setup
 
@@ -98,7 +103,9 @@ Follow the steps below to install SimBa on your system using the recommended set
     -   **During installation**, make sure to **check the box** that says **"Add Python to PATH"**. This step is crucial, as it ensures that Python and pip (Python's package manager) are available in your terminal or command prompt.
     -   Follow the on-screen instructions to complete the installation.
 
--   **Verify the Installation**: After installation, open your terminal (or command prompt) and type the following command to check if Python was installed correctly: \`\`\`bash python --version
+-   **Verify the Installation**: After installation, open your terminal (or command prompt) and type the following command to check if Python was installed correctly:
+
+    ```python --version```
 
 2.  **Clone the Repository and Navigate to the Main Project Directory** To download SimBa, clone the repository from GitHub.
 
@@ -111,10 +118,12 @@ Run the following commands in your terminal or command prompt:
 ```
 
 3.  **Install Required Dependencies and Data** SimBa's required libraries and dependencies are listed in the requirements.txt file. Install them using the following command:
-```
+
+```         
     pip install -r requirements.txt
     python -m spacy download en_core_web_sm -q
 ```
+
 To download data required by the NLTK library, start the Python interpreter
 
 ```         
@@ -140,6 +149,10 @@ exit()
 Once everything is installed, you can run the SimBa project. To do so, use the following command in the terminal:
 
 ```         
+  python main.py sample
+
+  ## OR
+
   python main.py <dataset name>
 ```
 
