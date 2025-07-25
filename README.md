@@ -124,25 +124,6 @@ Run the following commands in your terminal or command prompt:
     python -m spacy download en_core_web_sm -q
 ```
 
-To download data required by the NLTK library, start the Python interpreter
-
-```         
-    python
-```
-
-then use nltk's download method:
-
-```         
-    import nltk
-    nltk.download(‘stopwords’)
-    nltk.download(‘punkt’)
-```
-
-Afterwards, exit the interpreter:
-
-```         
-exit()
-```
 
 ## How to Use
 
