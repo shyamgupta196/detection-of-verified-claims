@@ -121,7 +121,6 @@ Run the following commands in your terminal or command prompt:
 
 ```         
     pip install -r requirements.txt
-    python -m spacy download en_core_web_sm -q
 ```
 
 
